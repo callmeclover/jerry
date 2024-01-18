@@ -10,3 +10,4 @@ screenshots = "0.8.6"
 # we're using enigo for this until we need to implement multi-display
 tts = "0.25.6"
 rand = "0.8.4"
+tokio = "1.35.1"
