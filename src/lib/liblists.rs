@@ -7,7 +7,6 @@ pub struct MainList {
     pub kb_list: (Vec<Vec<(Key, usize)>>, usize),
     pub ms_list: (Vec<Vec<(&str, usize)>>, usize),
     pub qu_list: (Vec<Vec<(&str, usize)>>, usize),
-    static screenshot: (&str, usize),
 }
 
 /* Keyboard lists */
@@ -59,12 +58,12 @@ let modifier_keys: Vec<(Key, usize)> = vec![
     (Key::Control, 1), (Key::LControl, 1), (Key::RControl, 1),
     (Key::Alt, 1),
     (Key::Shift, 2), (Key::LShift, 2), (Key::RShift, 2),
-    (Key::Meta, 1),
 ];
 
 let special_keys: Vec<(Key, usize)> = vec![
     (Key::Backspace, 1),
     (Key::Begin, 1),
+    (Key::Meta, 1),
     (Key::Break, 1),
     (Key::CapsLock, 1),
     (Key::Clear, 1),
@@ -137,4 +136,4 @@ pub const ms_list: Vec<Vec<(&str, usize)>> = vec![mouse_clicks, mouse_move, mous
 pub const qu_list: Vec<Vec<(&str, usize)>> = vec![quotes_negative, quotes_positive, quotes_question, quotes_statement];
 
 // Mega list
-pub const main_list: MainList = MainList((kb_list, 7), (ms_list, 6), (qu_list, 1), ("screenshot", 3))
+pub const main_list: MainList = MainList((kb_list, 7), (ms_list, 6), (qu_list, 1))
