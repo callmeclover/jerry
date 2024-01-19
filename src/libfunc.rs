@@ -1,8 +1,11 @@
-use crate::liblists::{*, self};
+use crate::liblists::*;
+use enigo::Key;
 use tokio::time::{sleep, Duration};
 use serde::Deserialize;
 use std::fs;
 use lazy_static::lazy_static;
+use rand::prelude::*;
+use rand::distributions::WeightedIndex;
 
 lazy_static! {
     pub static ref CONFIG: ConfigToml = toml
@@ -52,15 +55,20 @@ fn get_config_options() -> Vec<(&'static str, usize)> {
     return config;
 }
 
+fn get_weighted_index(list: Vec<(&'static str, usize)>) -> WeightedIndex<usize> {
+    return WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
+}
+
+fn get_weighted_index_keys(list: Vec<(Key, usize)>) -> WeightedIndex<usize> {
+    return WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
+}
+
 // TODO: add functions to select inputs
 pub async fn main_logic() {
     sleep(Duration::from_secs(1)).await;
-    println!("{:#?}", get_config_options());
-}
+    
+    let options = get_config_options();
+    let dist = get_weighted_index(options);
 
-//
-// TODO:
-// - Get primary input list
-// - Get secondary input list
-// - Do things
-//
+    sleep(Duration::from_secs(1)).await;
+}
