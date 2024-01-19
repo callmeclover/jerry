@@ -30,17 +30,32 @@ struct Basic {
     do_tts: bool,
 }
 
-const OPTIONS: [(&str, usize); 4] = [
-    ("keyboard", 8),
-    ("mouse", 7),
-    ("quote", 7),
-    ("screenshot", 1),
-];
+fn get_config_options() -> Vec<(&'static str, usize)> {
+    let mut config: Vec<(&'static str, usize)> = vec![];
+
+    if CONFIG.basic.use_mouse {
+        config.push(("mouse", 7));
+    }
+    if CONFIG.basic.use_keyboard {
+        config.push(("keyboard", 8));
+    }
+    if CONFIG.basic.use_controller {
+        config.push(("gamepad", 8));
+    }
+    if CONFIG.basic.do_screenshots {
+        config.push(("screenshot", 1));
+    }
+    if CONFIG.basic.do_tts {
+        config.push(("quote", 4));
+    }
+
+    return config;
+}
 
 // TODO: add functions to select inputs
 pub async fn main_logic() {
     sleep(Duration::from_secs(1)).await;
-    println!("{:#?}", *CONFIG);
+    println!("{:#?}", get_config_options());
 }
 
 //
