@@ -1,10 +1,10 @@
 mod libfunc;
-use libfunc::*;
-use keyboard::*;
+mod liblists;
+use libfunc::main_logic;
 
 #[tokio::main]
 async fn main() {
-    while true {
-        mainLogic().await;
-    };
+    main_logic().await;
+    loop {
+    }
 }
