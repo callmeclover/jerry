@@ -2,7 +2,8 @@ use std::any::Any;
 use enigo::{ Key, Key::Layout };
 
 /* Keyboard lists */
-pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
+pub fn keyboard(enigo: Enigo) {
+let ALPHANUMERIC_KEYS: Vec<(Key, usize)> = vec![
     (Key::A, 3),
     (Key::B, 3),
     (Key::C, 3),
@@ -52,7 +53,7 @@ pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
     (Layout('/'), 1)
 ];
 
-pub static FUNCTION_KEYS: [(Key, usize); 24] = [
+let FUNCTION_KEYS: Vec<(Key, usize)> = vec![
     (Key::F1, 1),
     (Key::F2, 1),
     (Key::F3, 1),
@@ -79,7 +80,7 @@ pub static FUNCTION_KEYS: [(Key, usize); 24] = [
     (Key::F24, 1)
 ];
 
-pub static MODIFIER_KEYS: [(Key, usize); 8] = [
+let MODIFIER_KEYS: Vec<(Key, usize)> = vec![
     (Key::Control, 1),
     (Key::LControl, 1),
     (Key::RControl, 1),
@@ -90,7 +91,7 @@ pub static MODIFIER_KEYS: [(Key, usize); 8] = [
     (Key::RShift, 1)
 ];
 
-pub static SPECIAL_KEYS: [(Key, usize); 36] = [
+let SPECIAL_KEYS: Vec<(Key, usize)> = vec![
     (Key::Backspace, 1),
     (Key::Meta, 1),
     (Key::Clear, 1),
@@ -124,10 +125,17 @@ pub static SPECIAL_KEYS: [(Key, usize); 36] = [
     (Key::Add, 1),
     (Key::Decimal, 1),
     (Key::Divide, 1),
-    (Key::Return, 1),
     (Key::Multiply, 1),
     (Key::Subtract, 1)
 ];
+
+let COMBINED: Vec<([(Key, usize)], usize)> = vec![
+    (ALPHANUMERIC_KEYS, 1),
+    (FUNCTION_KEYS, 1),
+    (MODIFIER_KEYS, 1),
+    (SPECIAL_KEYS, 1),
+];
+}
 
 /* Mouse action lists */
 pub static MOUSE_CLICKS: [(&str, usize); 27] = [
@@ -169,12 +177,13 @@ pub static MOUSE_SCROLL: [(&str, usize); 3] = [
 ];
 
 /* Quotes */
-pub static QUOTES_NEGATIVE: [(&str, usize); 5] = [
+pub static QUOTES_NEGATIVE: [(&str, usize); 6] = [
     ("i don't like you", 1),
     ("you have no friends", 1),
     ("loser", 1),
     ("idiot", 1),
-    ("you're a mess", 1)
+    ("you're a mess", 1),
+    ("i hope you die in a fire", 1)
 ];
 
 pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
@@ -187,7 +196,7 @@ pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
 pub static QUOTES_QUESTION: [(&str, usize); 4] = [
     ("what graphics card is this?", 1),
     ("what games you got?", 1),
-    ("where's your father?", 1),
+    ("where's your father, huh?", 1),
     ("how does this work?", 1)
 ];
 
@@ -200,18 +209,18 @@ pub static QUOTES_STATEMENT: [(&str, usize); 4] = [
 
 /* Gamepad action lists */
 pub static GAMEPAD_BUTTONS: [(Key, usize); 12] = [
-    (Key::GamepadA, 2),
-    (Key::GamepadB, 2),
+    (Key::GamepadA, 3),
+    (Key::GamepadB, 3),
     (Key::GamepadDPadDown, 1),
     (Key::GamepadDPadLeft, 1),
     (Key::GamepadDPadRight, 1),
     (Key::GamepadDPadUp, 1),
     (Key::GamepadLeftShoulder, 1),
-    (Key::GamepadLeftTrigger, 1),
+    (Key::GamepadLeftTrigger, 2),
     (Key::GamepadRightShoulder, 1),
-    (Key::GamepadRightTrigger, 1),
-    (Key::GamepadX, 2),
-    (Key::GamepadY, 2)
+    (Key::GamepadRightTrigger, 2),
+    (Key::GamepadX, 3),
+    (Key::GamepadY, 3)
 ];
 
 pub static GAMEPAD_MOVE: [(Key, usize); 8] = [
@@ -230,4 +239,11 @@ pub static GAMEPAD_SPECIAL: [(Key, usize); 4] = [
     (Key::GamepadMenu, 1),
     (Key::GamepadRightThumbstickButton, 1),
     (Key::GamepadView, 1)
+];
+
+// Combined lists
+pub static GAMEPAD_OPTIONS: [([(Key, usize)], usize); 3] = [
+    (GAMEPAD_BUTTONS, 2),
+    (GAMEPAD_MOVE, 2),
+    (GAMEPAD_SPECIAL, 1)
 ];
