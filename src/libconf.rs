@@ -1,9 +1,8 @@
-//mod libconf;
-//use libconf::*;
 use serde::*;
 use std::{ fs, path::Path, any::Any};
 use toml::{de::Error, from_str, to_string_pretty};
 use ansi_term::Color;
+use dialoguer::{theme::ColorfulTheme, Confirm};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Config {
@@ -72,8 +71,7 @@ impl Default for Config {
     extra: Extra::default()
 }}}
 
-#[tokio::main]
-async fn main() {
+async fn get_config() {
     if Path::new("./config.toml").exists() {
         loop {
         let config_contents = fs::read_to_string("./config.toml").expect("Failed to read TOML file");
@@ -84,23 +82,55 @@ async fn main() {
                 return config;
             }
             Err(err) => {
-                println!("{} {} {} {} {}.", Color::Red.paint("[ERR]:"), Color::Fixed(7).paint("The config file has either been"), Color::Red.paint("incorrectly modified"), Color::Fixed(7).paint("or"), Color::Red.paint("had a section removed"));
-                println!("{} {}", Color::Blue.paint("[INFO]:"), Color::Cyan.paint("Resetting the config file..."));
+                println!("{} The config file has either been incorrectly modified or has had a section removed.", Color::Red.paint("[ERR]:"));
+                println!("{} Resetting the config file...", Color::Blue.paint("[INFO]:"));
 
                 let new_config_contents = to_string_pretty(&Config::default()).expect("Failed to serialize struct to TOML");
                 fs::write("./config.toml", new_config_contents).expect("Failed to write updated TOML contents");  
         
-                println!("{} {}", Color::Green.paint("[OK]:"), Color::Fixed(30).paint("Sucessfully reset the config file."));      
+                println!("{} Sucessfully reset the config file.", Color::Green.paint("[OK]:"));      
             }
         }
     }
        } else {
-        println!("{} {} {} {} {}.", Color::Purple.paint("[STRANGE]:"), Color::Fixed(7).paint("The config file can't be found, would you like to create one now?"), Color::Red.paint("incorrectly modified"), Color::Fixed(7).paint("or"), Color::Red.paint("had a section removed"));
-        println!("{} {}", Color::Blue.paint("[INFO]:"), Color::Cyan.paint("Resetting creating config file..."));
+        if Confirm::with_theme(&ColorfulTheme::default())
+        .with_prompt(format("{} The config file can't be found, would you like to create one now?", Color::Purple.paint("[STRANGE]:")))
+        .wait_for_newline(true)
+        .interact()
+        .unwrap()
+    {
+        println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
 
         let new_config_contents = to_string_pretty(&Config::default()).expect("Failed to serialize struct to TOML");
         fs::write("./config.toml", new_config_contents).expect("Failed to write updated TOML contents");  
 
-        println!("{} {}", Color::Green.paint("[OK]:"), Color::Fixed(30).paint("Sucessfully created the config file."));      
-       }
+        println!("{} Sucessfully created the config file.", Color::Green.paint("[OK]:"));      
+    } else {
+        println!("{} Using default config file.", Color::Blue.paint("[INFO]:"));
+        println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));      
+        return Config::default();
+    }
+   }
+}
+
+async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
+    let mut options: Vec<(&'static str, usize)> = vec![];
+
+    if config.basic.use_mouse {
+        config.push(("mouse", 7));
+    }
+    if config.basic.use_keyboard {
+        config.push(("keyboard", 8));
+    }
+    if config.basic.use_controller {
+        config.push(("gamepad", 8));
+    }
+    if config.basic.do_screenshots {
+        config.push(("screenshot", 1));
+    }
+    if config.basic.do_tts {
+        config.push(("quote", 4));
+    }
+
+    return options;
 }

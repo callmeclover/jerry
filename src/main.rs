@@ -1,10 +1,20 @@
 mod libfunc;
-mod liblists;
+mod libconf;
+use libconf::*;
 use libfunc::main_logic;
+
+use tts::*;
+use enigo::*;
 
 #[tokio::main]
 async fn main() {
-    main_logic().await;
+    let config = get_config().await;
+    let options = get_options(config).await;
+
+    let mut tts = Tts::default();
+    let mut enigo = Enigo::new();
+
     loop {
+        main_logic(options, tts, enigo).await;
     }
 }
