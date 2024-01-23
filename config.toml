@@ -1,6 +1,0 @@
-[basic]
-use_mouse = true        # default: true
-use_keyboard = true     # default: true
-use_controller = false  # default: false
-do_screenshots = true   # default: true
-do_tts = true           # default: true

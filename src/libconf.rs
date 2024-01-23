@@ -71,8 +71,9 @@ impl Default for Config {
     extra: Extra::default()
 }}}
 
-async fn get_config() {
-    if Path::new("./config.toml").exists() {
+pub async fn get_config() -> Config {
+    loop {
+        if Path::new("./config.toml").exists() {
         loop {
         let config_contents = fs::read_to_string("./config.toml").expect("Failed to read TOML file");
         let mut config: Result<Config, Error> = from_str(&config_contents);
@@ -94,7 +95,7 @@ async fn get_config() {
     }
        } else {
         if Confirm::with_theme(&ColorfulTheme::default())
-        .with_prompt(format("{} The config file can't be found, would you like to create one now?", Color::Purple.paint("[STRANGE]:")))
+        .with_prompt(format!("{} The config file can't be found, would you like to create one now?", Color::Purple.paint("[STRANGE]:")))
         .wait_for_newline(true)
         .interact()
         .unwrap()
@@ -112,24 +113,25 @@ async fn get_config() {
     }
    }
 }
+}
 
-async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
+pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     let mut options: Vec<(&'static str, usize)> = vec![];
 
     if config.basic.use_mouse {
-        config.push(("mouse", 7));
+        options.push(("mouse", 7));
     }
     if config.basic.use_keyboard {
-        config.push(("keyboard", 8));
+        options.push(("keyboard", 8));
     }
     if config.basic.use_controller {
-        config.push(("gamepad", 8));
+        options.push(("gamepad", 8));
     }
     if config.basic.do_screenshots {
-        config.push(("screenshot", 1));
+        options.push(("screenshot", 1));
     }
     if config.basic.do_tts {
-        config.push(("quote", 4));
+        options.push(("quote", 4));
     }
 
     return options;
