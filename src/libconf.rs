@@ -1,5 +1,4 @@
-use serde::*;
-use std::{ fs, path::Path, any::Any};
+use std::{ fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
 use ansi_term::Color;
 use dialoguer::{theme::ColorfulTheme, Confirm};
@@ -76,13 +75,13 @@ pub async fn get_config() -> Config {
         if Path::new("./config.toml").exists() {
         loop {
         let config_contents = fs::read_to_string("./config.toml").expect("Failed to read TOML file");
-        let mut config: Result<Config, Error> = from_str(&config_contents);
+        let config: Result<Config, Error> = from_str(&config_contents);
 
         match config {
             Ok(config) => {
                 return config;
             }
-            Err(err) => {
+            Err(_err) => {
                 println!("{} The config file has either been incorrectly modified or has had a section removed.", Color::Red.paint("[ERR]:"));
                 println!("{} Resetting the config file...", Color::Blue.paint("[INFO]:"));
 
@@ -119,7 +118,7 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     let mut options: Vec<(&'static str, usize)> = vec![];
 
     if config.basic.use_mouse {
-        options.push(("mouse", 7));
+        options.push(("mouse", 5));
     }
     if config.basic.use_keyboard {
         options.push(("keyboard", 8));
@@ -131,7 +130,7 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         options.push(("screenshot", 1));
     }
     if config.basic.do_tts {
-        options.push(("quote", 4));
+        options.push(("quote", 2));
     }
 
     return options;

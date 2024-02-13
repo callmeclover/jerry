@@ -1,35 +1,33 @@
-use std::any::Any;
 use enigo::{ Key, Key::Layout };
 
 /* Keyboard lists */
-pub fn keyboard(enigo: Enigo) {
-let ALPHANUMERIC_KEYS: Vec<(Key, usize)> = vec![
-    (Key::A, 3),
-    (Key::B, 3),
-    (Key::C, 3),
-    (Key::D, 3),
-    (Key::E, 3),
-    (Key::F, 3),
-    (Key::G, 3),
-    (Key::H, 3),
-    (Key::I, 3),
-    (Key::J, 3),
-    (Key::K, 3),
-    (Key::L, 3),
-    (Key::M, 3),
-    (Key::N, 3),
-    (Key::O, 3),
-    (Key::P, 3),
-    (Key::Q, 3),
-    (Key::R, 3),
-    (Key::S, 3),
-    (Key::T, 3),
-    (Key::U, 3),
-    (Key::V, 3),
-    (Key::W, 3),
-    (Key::X, 3),
-    (Key::Y, 3),
-    (Key::Z, 3),
+pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
+    (Key::A, 4),
+    (Key::B, 4),
+    (Key::C, 4),
+    (Key::D, 4),
+    (Key::E, 4),
+    (Key::F, 4),
+    (Key::G, 4),
+    (Key::H, 4),
+    (Key::I, 4),
+    (Key::J, 4),
+    (Key::K, 4),
+    (Key::L, 4),
+    (Key::M, 4),
+    (Key::N, 4),
+    (Key::O, 4),
+    (Key::P, 4),
+    (Key::Q, 4),
+    (Key::R, 4),
+    (Key::S, 4),
+    (Key::T, 4),
+    (Key::U, 4),
+    (Key::V, 4),
+    (Key::W, 4),
+    (Key::X, 4),
+    (Key::Y, 4),
+    (Key::Z, 4),
     (Key::Num0, 2),
     (Key::Num1, 2),
     (Key::Num2, 2),
@@ -53,7 +51,7 @@ let ALPHANUMERIC_KEYS: Vec<(Key, usize)> = vec![
     (Layout('/'), 1)
 ];
 
-let FUNCTION_KEYS: Vec<(Key, usize)> = vec![
+pub static FUNCTION_KEYS: [(Key, usize); 24] = [
     (Key::F1, 1),
     (Key::F2, 1),
     (Key::F3, 1),
@@ -80,23 +78,23 @@ let FUNCTION_KEYS: Vec<(Key, usize)> = vec![
     (Key::F24, 1)
 ];
 
-let MODIFIER_KEYS: Vec<(Key, usize)> = vec![
+pub static MODIFIER_KEYS: [(Key, usize); 7] = [
     (Key::Control, 1),
     (Key::LControl, 1),
     (Key::RControl, 1),
     (Key::Alt, 1),
-    (Key::CapsLock, 1),
     (Key::Shift, 1),
     (Key::LShift, 1),
     (Key::RShift, 1)
 ];
 
-let SPECIAL_KEYS: Vec<(Key, usize)> = vec![
+pub static SPECIAL_KEYS: [(Key, usize); 36] = [
     (Key::Backspace, 1),
     (Key::Meta, 1),
     (Key::Clear, 1),
     (Key::Delete, 1),
     (Key::End, 1),
+    (Key::CapsLock, 1),
     (Key::Escape, 1),
     (Key::Execute, 1),
     (Key::Help, 1),
@@ -129,14 +127,6 @@ let SPECIAL_KEYS: Vec<(Key, usize)> = vec![
     (Key::Subtract, 1)
 ];
 
-let COMBINED: Vec<([(Key, usize)], usize)> = vec![
-    (ALPHANUMERIC_KEYS, 1),
-    (FUNCTION_KEYS, 1),
-    (MODIFIER_KEYS, 1),
-    (SPECIAL_KEYS, 1),
-];
-}
-
 /* Mouse action lists */
 pub static MOUSE_CLICKS: [(&str, usize); 27] = [
     ("mouse_down_left", 1),
@@ -148,27 +138,29 @@ pub static MOUSE_CLICKS: [(&str, usize); 27] = [
     ("mouse_down_scrolldown", 1),
     ("mouse_down_scrollright", 1),
     ("mouse_down_scrollleft", 1),
-    ("mouse_up_left", 1),
-    ("mouse_up_right", 1),
-    ("mouse_up_middle", 1),
-    ("mouse_up_back", 1),
-    ("mouse_up_forward", 1),
-    ("mouse_up_scrollup", 1),
-    ("mouse_up_scrolldown", 1),
-    ("mouse_up_scrollright", 1),
-    ("mouse_up_scrollleft", 1),
-    ("mouse_click_left", 1),
-    ("mouse_click_right", 1),
-    ("mouse_click_middle", 1),
-    ("mouse_click_back", 1),
-    ("mouse_click_forward", 1),
-    ("mouse_click_scrollup", 1),
-    ("mouse_click_scrolldown", 1),
-    ("mouse_click_scrollright", 1),
-    ("mouse_click_scrollleft", 1)
+
+    ("mouse_up_left", 2),
+    ("mouse_up_right", 2),
+    ("mouse_up_middle", 2),
+    ("mouse_up_back", 2),
+    ("mouse_up_forward", 2),
+    ("mouse_up_scrollup", 2),
+    ("mouse_up_scrolldown", 2),
+    ("mouse_up_scrollright", 2),
+    ("mouse_up_scrollleft", 2),
+
+    ("mouse_click_left", 5),
+    ("mouse_click_right", 5),
+    ("mouse_click_middle", 5),
+    ("mouse_click_back", 5),
+    ("mouse_click_forward", 5),
+    ("mouse_click_scrollup", 5),
+    ("mouse_click_scrolldown", 5),
+    ("mouse_click_scrollright", 5),
+    ("mouse_click_scrollleft", 5)
 ];
 
-pub static MOUSE_MOVE: [(&str, usize); 2] = [("mouse_move_abs", 1), ("mouse_move_rel", 2)];
+pub static MOUSE_MOVE: [(&str, usize); 2] = [("mouse_move_abs", 1), ("mouse_move_rel", 3)];
 
 pub static MOUSE_SCROLL: [(&str, usize); 3] = [
     ("mouse_scroll_x", 2),
@@ -177,13 +169,15 @@ pub static MOUSE_SCROLL: [(&str, usize); 3] = [
 ];
 
 /* Quotes */
-pub static QUOTES_NEGATIVE: [(&str, usize); 6] = [
+pub static QUOTES_NEGATIVE: [(&str, usize); 8] = [
     ("i don't like you", 1),
     ("you have no friends", 1),
     ("loser", 1),
     ("idiot", 1),
     ("you're a mess", 1),
-    ("i hope you die in a fire", 1)
+    ("i hope you die in a fire", 1),
+    ("i hate you", 1),
+    ("you have a large ass forehead", 1)
 ];
 
 pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
@@ -239,11 +233,4 @@ pub static GAMEPAD_SPECIAL: [(Key, usize); 4] = [
     (Key::GamepadMenu, 1),
     (Key::GamepadRightThumbstickButton, 1),
     (Key::GamepadView, 1)
-];
-
-// Combined lists
-pub static GAMEPAD_OPTIONS: [([(Key, usize)], usize); 3] = [
-    (GAMEPAD_BUTTONS, 2),
-    (GAMEPAD_MOVE, 2),
-    (GAMEPAD_SPECIAL, 1)
 ];
