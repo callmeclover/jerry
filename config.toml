@@ -1,0 +1,10 @@
+[basic]
+use_mouse = true
+use_keyboard = true
+use_controller = false
+do_screenshots = false
+do_tts = true
+
+[extra]
+do_debugging = false
+enable_debugging_extras = false

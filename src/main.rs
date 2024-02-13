@@ -1,21 +1,35 @@
 mod libfunc;
 mod libconf;
-//mod liblists;
+mod liblists;
+use ansi_term::Color;
 use libconf::*;
 use libfunc::main_logic;
 
-//use tts::*;
+use std::fs::*;
+use tts::*;
 use enigo::*;
 
 #[tokio::main]
 async fn main() {
-    let config = get_config().await;
-    let options = get_options(config).await;
+    let options: Vec<(&str, usize)> = get_options(get_config().await).await;
 
-//    let mut tts = Tts::default();
-    let mut enigo = Enigo::new();
+    println!("\n{} Starting Jerry...", Color::Blue.paint("[INFO]:"));
+    println!("{} Jerry has been started!\n", Color::Green.paint("[OK]:"));
 
+    if !metadata("screenshots").is_ok() {
+        let _ = create_dir("screenshots");
+    }
+
+    let mut tts: Tts = match Tts::default() {
+        Ok(tts) => tts,
+        Err(err) => {
+            panic!("Failed to create tts instance: {:?}", err);
+        }
+    };
+
+    let mut enigo: Enigo = Enigo::new();
+    
     loop {
-        main_logic(&options, /*tts, */&mut enigo).await;
+        main_logic(&options, &mut tts, &mut enigo).await;    
     }
 }
