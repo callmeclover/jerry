@@ -118,19 +118,19 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     let mut options: Vec<(&'static str, usize)> = vec![];
 
     if config.basic.use_mouse {
-        options.push(("mouse", 5));
+        options.push(("mouse", 30));
     }
     if config.basic.use_keyboard {
-        options.push(("keyboard", 8));
+        options.push(("keyboard", 50));
     }
     if config.basic.use_controller {
-        options.push(("gamepad", 8));
+        options.push(("gamepad", 50));
     }
     if config.basic.do_screenshots {
-        options.push(("screenshot", 1));
+        options.push(("screenshot", 5));
     }
     if config.basic.do_tts {
-        options.push(("quote", 2));
+        options.push(("quote", 15));
     }
 
     return options;
