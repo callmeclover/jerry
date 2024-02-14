@@ -8,7 +8,7 @@ use tokio::time::{ sleep, Duration };
 use regex::Regex;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
-
+use rsautogui::{mouse, mouse::Speed, mouse::Button, mouse::ScrollAxis};
 use tts::*;
 use chrono::prelude::*;
 use chrono::DateTime;
@@ -135,14 +135,48 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     } else {
         match click {
             "mouse_move_abs" =>
-                enigo.mouse_move_to(
+                mouse::move_to(
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
                 ),
             "mouse_move_rel" =>
-                enigo.mouse_move_relative(
+                mouse::move_rel(
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                ),
+                "mouse_drag_abs_std" =>
+                mouse::drag_to(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                ),
+            "mouse_drag_rel_std" =>
+                mouse::drag_rel(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                ),
+                "mouse_drag_abs_fst" =>
+                mouse::slow_drag_to(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    Speed::Fast
+                ),
+            "mouse_drag_rel_fst" =>
+                mouse::slow_drag_rel(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    Speed::Fast
+                ),
+                "mouse_drag_abs_slw" =>
+                mouse::slow_drag_to(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    Speed::Slow
+                ),
+            "mouse_drag_rel_slw" =>
+                mouse::slow_drag_rel(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    Speed::Slow
                 ),
             "mouse_scroll_x" => enigo.mouse_scroll_x(rng.gen_range(1..=200)),
             "mouse_scroll_y" => enigo.mouse_scroll_y(rng.gen_range(1..=175)),

@@ -160,7 +160,16 @@ pub static MOUSE_CLICKS: [(&str, usize); 27] = [
     ("mouse_click_scrollleft", 5)
 ];
 
-pub static MOUSE_MOVE: [(&str, usize); 2] = [("mouse_move_abs", 1), ("mouse_move_rel", 3)];
+pub static MOUSE_MOVE: [(&str, usize); 8] = [
+    ("mouse_move_abs", 1), 
+    ("mouse_move_rel", 1), 
+    ("mouse_drag_abs_std", 5), 
+    ("mouse_drag_rel_std", 5), 
+    ("mouse_drag_abs_fst", 2),
+    ("mouse_drag_rel_fst", 3),
+    ("mouse_drag_abs_slw", 2), 
+    ("mouse_drag_rel_slw", 3)
+];
 
 pub static MOUSE_SCROLL: [(&str, usize); 3] = [
     ("mouse_scroll_x", 2),
