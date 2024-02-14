@@ -1,6 +1,6 @@
 [package]
 name = "jerry"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
@@ -17,4 +17,4 @@ time = "0.3.31"
 chrono = "0.4.31"
 ansi_term = "0.12.1"
 regex = "1.10.3"
-
+rsautogui = "0.2.2"
