@@ -6,11 +6,43 @@ use rand::distributions::{ WeightedIndex, Distribution };
 use rand::thread_rng;
 use tokio::time::{ sleep, Duration };
 use regex::Regex;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 
 use tts::*;
 use chrono::prelude::*;
 use chrono::DateTime;
 use screenshots::Screen;
+
+lazy_static! {
+    static ref IS_SHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_CTRL_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_ALT_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_LSHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_LCTRL_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_RSHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
+    static ref IS_RCTRL_PRESSED: Mutex<bool> = Mutex::new(false);
+}
+
+fn toggle_key_press(key: Key, enigo: &mut Enigo) {
+    let kstr = match key {
+        Key::Shift => IS_SHIFT_PRESSED.lock().unwrap(),
+        Key::Control => IS_CTRL_PRESSED.lock().unwrap(),
+        Key::Alt => IS_ALT_PRESSED.lock().unwrap(),
+        Key::LShift => IS_LSHIFT_PRESSED.lock().unwrap(),
+        Key::LControl => IS_LCTRL_PRESSED.lock().unwrap(),
+        Key::RShift => IS_RSHIFT_PRESSED.lock().unwrap(),
+        Key::RControl => IS_RCTRL_PRESSED.lock().unwrap(),
+        _ => { return }
+    };
+    let kvalue = *kstr;
+    let kstr = !kvalue;
+    if kstr {
+        enigo.key_up(key);
+    } else {
+        enigo.key_down(key);
+    }
+}
 
 fn convert_mouse_action(input: &str) -> Option<MouseButton> {
     match input {
@@ -53,7 +85,11 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let index2: WeightedIndex<usize> = WeightedIndex::new(
         list.iter().map(|item: &(Key, usize)| item.1)
     ).unwrap();
-    enigo.key_click(list[index2.sample(rng)].0);
+    if list.contains(&(Key::Shift, 1)) {
+        toggle_key_press(list[index2.sample(rng)].0, enigo);
+    } else {
+        enigo.key_click(list[index2.sample(rng)].0);
+    }
 }
 
 fn gamepad(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
@@ -98,7 +134,11 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
         enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
     } else {
         match click {
-            "mouse_move_abs" => enigo.mouse_move_to(rng.gen_range(0..=MouseControllable::main_display_size(enigo).0), rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)),
+            "mouse_move_abs" =>
+                enigo.mouse_move_to(
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                ),
             "mouse_move_rel" =>
                 enigo.mouse_move_relative(
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
@@ -149,7 +189,9 @@ fn screenshot(tts: &mut Tts) {
 pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: &mut Enigo) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
-    let index: WeightedIndex<usize> = WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
+    let index: WeightedIndex<usize> = WeightedIndex::new(
+        options.iter().map(|item| item.1)
+    ).unwrap();
     match options[index.sample(&mut rng)].0 {
         "keyboard" => keyboard(&mut enigo, &mut rng),
         "gamepad" => gamepad(&mut enigo, &mut rng),
