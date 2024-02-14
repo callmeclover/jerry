@@ -139,16 +139,6 @@ pub static MOUSE_CLICKS: [(&str, usize); 27] = [
     ("mouse_down_scrollright", 1),
     ("mouse_down_scrollleft", 1),
 
-    ("mouse_up_left", 2),
-    ("mouse_up_right", 2),
-    ("mouse_up_middle", 2),
-    ("mouse_up_back", 2),
-    ("mouse_up_forward", 2),
-    ("mouse_up_scrollup", 2),
-    ("mouse_up_scrolldown", 2),
-    ("mouse_up_scrollright", 2),
-    ("mouse_up_scrollleft", 2),
-
     ("mouse_click_left", 5),
     ("mouse_click_right", 5),
     ("mouse_click_middle", 5),

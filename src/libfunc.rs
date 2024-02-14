@@ -1,5 +1,6 @@
 use crate::liblists::*;
 use std::fs::*;
+use std::thread
 use enigo::*;
 use rand::Rng;
 use rand::distributions::{ WeightedIndex, Distribution };
@@ -124,11 +125,12 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let click: &str = list[index2.sample(rng)].0;
 
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
-        let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
-        enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
-    } else if Regex::new(r"mouse_up_.+").unwrap().is_match(click) {
-        let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
-        enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
+        thread::spawn(|| {
+            let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
+            enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
+            thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+            enigo.mouse_up(convert_mouse_action(typeclick).unwrap());
+        });
     } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
         let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
         enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
