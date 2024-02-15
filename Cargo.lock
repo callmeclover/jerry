@@ -706,7 +706,7 @@ dependencies = [
 
 [[package]]
 name = "jerry"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ansi_term",
  "chrono",
@@ -715,7 +715,8 @@ dependencies = [
  "lazy_static",
  "rand",
  "regex",
- "screenshots",
+ "rsautogui",
+ "screenshots 0.8.6",
  "serde",
  "time",
  "tokio",
@@ -1209,6 +1210,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 
 [[package]]
+name = "rsautogui"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ca204f9a553c6cb3e53d7389d72b829f914439454caea08f31e18619498987d"
+dependencies = [
+ "image",
+ "screenshots 0.5.4",
+ "spin_sleep",
+ "winput",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1253,6 +1266,23 @@ name = "scopeguard"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
+
+[[package]]
+name = "screenshots"
+version = "0.5.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "436a9fd3ae9c4fb426ceb884a087c39e4b451c7ee2f339a1ea3a66121534b41b"
+dependencies = [
+ "anyhow",
+ "core-graphics 0.22.3",
+ "dbus",
+ "display-info",
+ "fxhash",
+ "png",
+ "widestring",
+ "windows 0.48.0",
+ "xcb",
+]
 
 [[package]]
 name = "screenshots"
@@ -1372,6 +1402,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 dependencies = [
  "lock_api",
+]
+
+[[package]]
+name = "spin_sleep"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "368a978649eaf70006b082e79c832bd72556ac1393eaf564d686e919dca2347f"
+dependencies = [
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1768,6 +1807,15 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "windows"
+version = "0.48.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e686886bc078bc1b0b600cac0147aadb815089b6e4da64016cbd754b6342700f"
+dependencies = [
+ "windows-targets 0.48.5",
+]
+
+[[package]]
+name = "windows"
 version = "0.51.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca229916c5ee38c2f2bc1e9d8f04df975b4bd93f9955dc69fabb5d91270045c9"
@@ -2009,6 +2057,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b7cf47b659b318dccbd69cc4797a39ae128f533dce7902a1096044d1967b9c16"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "winput"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd4bec39938e0ae68b300e2a4197b6437f13d53d1c146c6e297e346a71d5dde9"
+dependencies = [
+ "winapi",
 ]
 
 [[package]]

@@ -128,7 +128,7 @@ pub static SPECIAL_KEYS: [(Key, usize); 36] = [
 ];
 
 /* Mouse action lists */
-pub static MOUSE_CLICKS: [(&str, usize); 27] = [
+pub static MOUSE_CLICKS: [(&str, usize); 18] = [
     ("mouse_down_left", 1),
     ("mouse_down_right", 1),
     ("mouse_down_middle", 1),
