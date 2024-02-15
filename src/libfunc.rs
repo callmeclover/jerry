@@ -1,6 +1,6 @@
 use crate::liblists::*;
 use std::fs::*;
-use std::thread
+use std::thread;
 use enigo::*;
 use rand::Rng;
 use rand::distributions::{ WeightedIndex, Distribution };
@@ -125,21 +125,19 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let click: &str = list[index2.sample(rng)].0;
 
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
-        thread::spawn(|| {
-            let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
-            enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
-            thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
-            enigo.mouse_up(convert_mouse_action(typeclick).unwrap());
-        });
-    } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
         let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
         enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
+        thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+        enigo.mouse_up(convert_mouse_action(typeclick).unwrap());
+    } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
+        let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
+        enigo.mouse_click(convert_mouse_action(typeclick).unwrap());
     } else {
         match click {
             "mouse_move_abs" =>
                 mouse::move_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap()
                 ),
             "mouse_move_rel" =>
                 mouse::move_rel(
@@ -148,8 +146,8 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
                 ),
                 "mouse_drag_abs_std" =>
                 mouse::drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap()
                 ),
             "mouse_drag_rel_std" =>
                 mouse::drag_rel(
@@ -158,8 +156,8 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
                 ),
                 "mouse_drag_abs_fst" =>
                 mouse::slow_drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap(),
                     Speed::Fast
                 ),
             "mouse_drag_rel_fst" =>
@@ -170,8 +168,8 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
                 ),
                 "mouse_drag_abs_slw" =>
                 mouse::slow_drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
+                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap(),
                     Speed::Slow
                 ),
             "mouse_drag_rel_slw" =>
