@@ -130,7 +130,7 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         options.push(("screenshot", 5));
     }
     if config.basic.do_tts {
-        options.push(("quote", 15));
+        options.push(("quote", 10));
     }
 
     return options;
