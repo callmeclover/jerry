@@ -127,7 +127,7 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         options.push(("gamepad", 50));
     }
     if config.basic.do_screenshots {
-        options.push(("screenshot", 5));
+        options.push(("screenshot", 1));
     }
     if config.basic.do_tts {
         options.push(("quote", 10));
