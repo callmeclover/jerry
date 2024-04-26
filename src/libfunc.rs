@@ -45,17 +45,11 @@ fn toggle_key_press(key: Key, enigo: &mut Enigo) {
     }
 }
 
-fn convert_mouse_action(input: &str) -> Option<MouseButton> {
+fn convert_mouse_action(input: &str) -> Option<Button> {
     match input {
-        "left" => Some(MouseButton::Left),
-        "right" => Some(MouseButton::Right),
-        "middle" => Some(MouseButton::Middle),
-        "back" => Some(MouseButton::Back),
-        "forward" => Some(MouseButton::Forward),
-        "scrollup" => Some(MouseButton::ScrollUp),
-        "scrolldown" => Some(MouseButton::ScrollDown),
-        "scrollright" => Some(MouseButton::ScrollRight),
-        "scrollleft" => Some(MouseButton::ScrollLeft),
+        "left" => Some(Button::Left),
+        "right" => Some(Button::Right),
+        "middle" => Some(Button::Middle),
         _ => { None }
     }
 }
@@ -125,13 +119,13 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let click: &str = list[index2.sample(rng)].0;
 
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
-        let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
-        enigo.mouse_down(convert_mouse_action(typeclick).unwrap());
+        let typeclick: Button = convert_mouse_action(click.split("_").collect::<Vec<_>>()[2]).expect("cant convert mouse action");
+        mouse::down(typeclick);
         thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
-        enigo.mouse_up(convert_mouse_action(typeclick).unwrap());
+        mouse::up(typeclick);
     } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
-        let typeclick: &str = click.split("_").collect::<Vec<_>>()[2];
-        enigo.mouse_click(convert_mouse_action(typeclick).unwrap());
+        let typeclick: Button = convert_mouse_action(click.split("_").collect::<Vec<_>>()[2]).expect("cant convert mouse action");
+        mouse::click(typeclick);
     } else {
         match click {
             "mouse_move_abs" =>
@@ -178,11 +172,11 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
                     rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
                     Speed::Slow
                 ),
-            "mouse_scroll_x" => enigo.mouse_scroll_x(rng.gen_range(1..=200)),
-            "mouse_scroll_y" => enigo.mouse_scroll_y(rng.gen_range(1..=175)),
+            "mouse_scroll_x" => mouse::scroll(ScrollAxis::X, rng.gen_range(1..=200)),
+            "mouse_scroll_y" => mouse::scroll(ScrollAxis::Y, rng.gen_range(1..=175)),
             "mouse_scroll_xy" => {
-                enigo.mouse_scroll_x(rng.gen_range(0..=200));
-                enigo.mouse_scroll_y(rng.gen_range(0..=175));
+                mouse::scroll(ScrollAxis::X, rng.gen_range(0..=200));
+                mouse::scroll(ScrollAxis::Y, rng.gen_range(0..=175));
             }
             _ => {}
         }
@@ -200,6 +194,18 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
     let list: &Vec<(&str, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> = WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
     let quote: &str = list[index2.sample(rng)].0;
+    println!("{}", quote);
+    let _ = tts.speak(quote, true);
+}
+
+fn quote_gen(tts: &mut Tts) {
+    let quote: &str = &reqwest::blocking::get("https://metaphorpsum.com/sentences/1/").expect("could not get external sentence api").text().unwrap();
+    println!("{}", quote);
+    let _ = tts.speak(quote, true);
+}
+
+fn quote_gen_ext(tts: &mut Tts) {
+    let quote: &str = &reqwest::blocking::get("https://metaphorpsum.com/sentences/1/").expect("could not get external sentence api").text().unwrap();
     println!("{}", quote);
     let _ = tts.speak(quote, true);
 }
@@ -232,6 +238,8 @@ pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: 
         "mouse" => mouse(&mut enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
+        "quote_gen" => todo!("quote_gen and is not yet implemented"),
+        "quote_gen_ext" => quote_gen_ext(tts),
         _ => println!("idk what you did but fix it"),
     }
 

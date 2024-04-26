@@ -128,26 +128,14 @@ pub static SPECIAL_KEYS: [(Key, usize); 36] = [
 ];
 
 /* Mouse action lists */
-pub static MOUSE_CLICKS: [(&str, usize); 18] = [
+pub static MOUSE_CLICKS: [(&str, usize); 6] = [
     ("mouse_down_left", 1),
     ("mouse_down_right", 1),
     ("mouse_down_middle", 1),
-    ("mouse_down_back", 1),
-    ("mouse_down_forward", 1),
-    ("mouse_down_scrollup", 1),
-    ("mouse_down_scrolldown", 1),
-    ("mouse_down_scrollright", 1),
-    ("mouse_down_scrollleft", 1),
 
     ("mouse_click_left", 5),
     ("mouse_click_right", 5),
-    ("mouse_click_middle", 5),
-    ("mouse_click_back", 5),
-    ("mouse_click_forward", 5),
-    ("mouse_click_scrollup", 5),
-    ("mouse_click_scrolldown", 5),
-    ("mouse_click_scrollright", 5),
-    ("mouse_click_scrollleft", 5)
+    ("mouse_click_middle", 5)
 ];
 
 pub static MOUSE_MOVE: [(&str, usize); 8] = [
@@ -168,7 +156,7 @@ pub static MOUSE_SCROLL: [(&str, usize); 3] = [
 ];
 
 /* Quotes */
-pub static QUOTES_NEGATIVE: [(&str, usize); 8] = [
+pub static QUOTES_NEGATIVE: [(&str, usize); 9] = [
     ("i don't like you", 1),
     ("you have no friends", 1),
     ("loser", 1),
@@ -176,7 +164,8 @@ pub static QUOTES_NEGATIVE: [(&str, usize); 8] = [
     ("you're a mess", 1),
     ("i hope you die in a fire", 1),
     ("i hate you", 1),
-    ("you have a large ass forehead", 1)
+    ("you have a large ass forehead", 1),
+    ("bozo", 1)
 ];
 
 pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
@@ -193,11 +182,13 @@ pub static QUOTES_QUESTION: [(&str, usize); 4] = [
     ("how does this work?", 1)
 ];
 
-pub static QUOTES_STATEMENT: [(&str, usize); 4] = [
+pub static QUOTES_STATEMENT: [(&str, usize); 6] = [
     ("i'm bored", 1),
     ("i am chaos", 1),
     ("what a mess", 1),
-    ("i'm going to break this computer", 1)
+    ("i'm going to break this computer", 1),
+    ("it's wizard time. fireball!", 1),
+    ("butter dog", 1)
 ];
 
 /* Gamepad action lists */

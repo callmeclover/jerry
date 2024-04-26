@@ -1,6 +1,6 @@
 [package]
 name = "jerry"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 [dependencies]
@@ -18,3 +18,4 @@ chrono = "0.4.31"
 ansi_term = "0.12.1"
 regex = "1.10.3"
 rsautogui = "0.2.2"
+reqwest = { version = "0.12.3", features = ["blocking"] }

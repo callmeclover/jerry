@@ -23,6 +23,8 @@ struct Basic {
     do_screenshots: bool,
     #[allow(dead_code)]
     do_tts: bool,
+    #[allow(dead_code)]
+    do_gen_tts: bool,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -31,6 +33,8 @@ struct Extra {
     do_debugging: bool,
     #[allow(dead_code)]
     enable_debugging_extras: bool,
+    #[allow(dead_code)]
+    use_external_sentence_api: bool,
 }
 
 impl Default for Basic {
@@ -46,6 +50,8 @@ impl Default for Basic {
     do_screenshots: true,
     #[allow(dead_code)]
     do_tts: true,
+    #[allow(dead_code)]
+    do_gen_tts: false,
         }
     }
 }
@@ -57,6 +63,8 @@ impl Default for Extra {
     do_debugging: false,
     #[allow(dead_code)]
     enable_debugging_extras: false,
+    #[allow(dead_code)]
+    use_external_sentence_api: false
     }
     }
 }
@@ -132,6 +140,14 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     if config.basic.do_tts {
         options.push(("quote", 10));
     }
+    if config.basic.do_gen_tts {
+        if config.extra.use_external_sentence_api {
+            options.push(("quote_gen_ext", 10));
+        } else {
+            options.push(("quote_gen", 10));
+        }
+    }
+    
 
     return options;
 }
