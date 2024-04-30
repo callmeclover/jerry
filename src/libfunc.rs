@@ -14,6 +14,7 @@ use tts::*;
 use chrono::prelude::*;
 use chrono::DateTime;
 use screenshots::Screen;
+use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 
 lazy_static! {
     static ref IS_SHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
@@ -39,9 +40,9 @@ fn toggle_key_press(key: Key, enigo: &mut Enigo) {
     let kvalue = *kstr;
     let kstr = !kvalue;
     if kstr {
-        enigo.key_up(key);
+        let _ = enigo.key(key, Direction::Press);
     } else {
-        enigo.key_down(key);
+        let _ = enigo.key(key, Direction::Release);
     }
 }
 
@@ -83,7 +84,7 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     if list.contains(&(Key::Shift, 1)) {
         toggle_key_press(list[index2.sample(rng)].0, enigo);
     } else {
-        enigo.key_click(list[index2.sample(rng)].0);
+        let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
     }
 }
 
@@ -100,7 +101,7 @@ fn gamepad(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let index2: WeightedIndex<usize> = WeightedIndex::new(
         list.iter().map(|item: &(Key, usize)| item.1)
     ).unwrap();
-    enigo.key_click(list[index2.sample(rng)].0);
+    let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
 }
 
 fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
@@ -130,46 +131,46 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
         match click {
             "mouse_move_abs" =>
                 mouse::move_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap()
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1).try_into().unwrap()
                 ),
             "mouse_move_rel" =>
                 mouse::move_rel(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
                 ),
                 "mouse_drag_abs_std" =>
                 mouse::drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap()
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1).try_into().unwrap()
                 ),
             "mouse_drag_rel_std" =>
                 mouse::drag_rel(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1)
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
                 ),
                 "mouse_drag_abs_fst" =>
                 mouse::slow_drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1).try_into().unwrap(),
                     Speed::Fast
                 ),
             "mouse_drag_rel_fst" =>
                 mouse::slow_drag_rel(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
                     Speed::Fast
                 ),
                 "mouse_drag_abs_slw" =>
                 mouse::slow_drag_to(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0).try_into().unwrap(),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0).try_into().unwrap(),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1).try_into().unwrap(),
                     Speed::Slow
                 ),
             "mouse_drag_rel_slw" =>
                 mouse::slow_drag_rel(
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).0),
-                    rng.gen_range(0..=MouseControllable::main_display_size(enigo).1),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
+                    rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
                     Speed::Slow
                 ),
             "mouse_scroll_x" => mouse::scroll(ScrollAxis::X, rng.gen_range(1..=200)),
@@ -199,7 +200,7 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
 }
 
 fn quote_gen(tts: &mut Tts) {
-    let quote: &str = &reqwest::blocking::get("https://metaphorpsum.com/sentences/1/").expect("could not get external sentence api").text().unwrap();
+    let quote: &str = &gen_sentence(SentenceConfigBuilder::random().build());
     println!("{}", quote);
     let _ = tts.speak(quote, true);
 }
@@ -238,7 +239,7 @@ pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: 
         "mouse" => mouse(&mut enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
-        "quote_gen" => todo!("quote_gen and is not yet implemented"),
+        "quote_gen" => quote_gen(tts),
         "quote_gen_ext" => quote_gen_ext(tts),
         _ => println!("idk what you did but fix it"),
     }

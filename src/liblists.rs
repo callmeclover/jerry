@@ -1,4 +1,4 @@
-use enigo::{ Key, Key::Layout };
+use enigo::{ Key, Key::Unicode };
 
 /* Keyboard lists */
 pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
@@ -38,17 +38,17 @@ pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
     (Key::Num7, 2),
     (Key::Num8, 2),
     (Key::Num9, 2),
-    (Layout('`'), 1),
-    (Layout('-'), 1),
-    (Layout('='), 1),
-    (Layout('['), 1),
-    (Layout(']'), 1),
-    (Layout('\\'), 1),
-    (Layout(';'), 1),
-    (Layout('\''), 1),
-    (Layout(','), 1),
-    (Layout('.'), 1),
-    (Layout('/'), 1)
+    (Unicode('`'), 1),
+    (Unicode('-'), 1),
+    (Unicode('='), 1),
+    (Unicode('['), 1),
+    (Unicode(']'), 1),
+    (Unicode('\\'), 1),
+    (Unicode(';'), 1),
+    (Unicode('\''), 1),
+    (Unicode(','), 1),
+    (Unicode('.'), 1),
+    (Unicode('/'), 1)
 ];
 
 pub static FUNCTION_KEYS: [(Key, usize); 24] = [

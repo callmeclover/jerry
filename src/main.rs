@@ -27,7 +27,7 @@ async fn main() {
         }
     };
 
-    let mut enigo: Enigo = Enigo::new();
+    let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
     
     loop {
         main_logic(&options, &mut tts, &mut enigo).await;    
