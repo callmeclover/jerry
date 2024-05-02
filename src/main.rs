@@ -1,13 +1,12 @@
-mod libfunc;
 mod libconf;
+mod libfunc;
 mod liblists;
 use ansi_term::Color;
+use std::fs::*;
+use enigo::*;
 use libconf::*;
 use libfunc::main_logic;
-
-use std::fs::*;
 use tts::*;
-use enigo::*;
 
 #[tokio::main]
 async fn main() {
@@ -28,8 +27,8 @@ async fn main() {
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
-    
+
     loop {
-        main_logic(&options, &mut tts, &mut enigo).await;    
+        main_logic(&options, &mut tts, &mut enigo).await;
     }
 }

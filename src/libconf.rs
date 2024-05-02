@@ -1,7 +1,7 @@
-use std::{ fs, path::Path};
-use toml::{de::Error, from_str, to_string_pretty};
 use ansi_term::Color;
 use dialoguer::{theme::ColorfulTheme, Confirm};
+use std::{fs, path::Path};
+use toml::{de::Error, from_str, to_string_pretty};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Config {
@@ -43,17 +43,17 @@ impl Default for Basic {
     fn default() -> Self {
         Basic {
             #[allow(dead_code)]
-    use_mouse: true,
-    #[allow(dead_code)]
-    use_keyboard: true,
-    #[allow(dead_code)]
-    use_controller: false,
-    #[allow(dead_code)]
-    do_screenshots: true,
-    #[allow(dead_code)]
-    do_tts: true,
-    #[allow(dead_code)]
-    do_gen_tts: false,
+            use_mouse: true,
+            #[allow(dead_code)]
+            use_keyboard: true,
+            #[allow(dead_code)]
+            use_controller: false,
+            #[allow(dead_code)]
+            do_screenshots: true,
+            #[allow(dead_code)]
+            do_tts: true,
+            #[allow(dead_code)]
+            do_gen_tts: false,
         }
     }
 }
@@ -62,14 +62,14 @@ impl Default for Extra {
     fn default() -> Self {
         Extra {
             #[allow(dead_code)]
-    do_debugging: false,
-    #[allow(dead_code)]
-    enable_debugging_extras: false,
-    #[allow(dead_code)]
-    use_external_sentence_api: false,
-    #[allow(dead_code)]
-    no_local_sentence_gen: false,
-    }
+            do_debugging: false,
+            #[allow(dead_code)]
+            enable_debugging_extras: false,
+            #[allow(dead_code)]
+            use_external_sentence_api: false,
+            #[allow(dead_code)]
+            no_local_sentence_gen: false,
+        }
     }
 }
 
@@ -77,53 +77,75 @@ impl Default for Config {
     fn default() -> Self {
         Config {
             #[allow(dead_code)]
-    basic: Basic::default(),
-    #[allow(dead_code)]
-    extra: Extra::default()
-}}}
+            basic: Basic::default(),
+            #[allow(dead_code)]
+            extra: Extra::default(),
+        }
+    }
+}
 
 pub async fn get_config() -> Config {
     loop {
         if Path::new("./config.toml").exists() {
-        loop {
-        let config_contents = fs::read_to_string("./config.toml").expect("Failed to read TOML file");
-        let config: Result<Config, Error> = from_str(&config_contents);
+            loop {
+                let config_contents =
+                    fs::read_to_string("./config.toml").expect("Failed to read TOML file");
+                let config: Result<Config, Error> = from_str(&config_contents);
 
-        match config {
-            Ok(config) => {
-                return config;
+                match config {
+                    Ok(config) => {
+                        return config;
+                    }
+                    Err(_err) => {
+                        println!("{} The config file has either been incorrectly modified or has had a section removed.", Color::Red.paint("[ERR]:"));
+                        println!(
+                            "{} Resetting the config file...",
+                            Color::Blue.paint("[INFO]:")
+                        );
+
+                        let new_config_contents = to_string_pretty(&Config::default())
+                            .expect("Failed to serialize struct to TOML");
+                        fs::write("./config.toml", new_config_contents)
+                            .expect("Failed to write updated TOML contents");
+
+                        println!(
+                            "{} Sucessfully reset the config file.",
+                            Color::Green.paint("[OK]:")
+                        );
+                    }
+                }
             }
-            Err(_err) => {
-                println!("{} The config file has either been incorrectly modified or has had a section removed.", Color::Red.paint("[ERR]:"));
-                println!("{} Resetting the config file...", Color::Blue.paint("[INFO]:"));
+        } else {
+            if Confirm::with_theme(&ColorfulTheme::default())
+                .with_prompt(format!(
+                    "{} The config file can't be found, would you like to create one now?",
+                    Color::Purple.paint("[STRANGE]:")
+                ))
+                .wait_for_newline(true)
+                .interact()
+                .unwrap()
+            {
+                println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
 
-                let new_config_contents = to_string_pretty(&Config::default()).expect("Failed to serialize struct to TOML");
-                fs::write("./config.toml", new_config_contents).expect("Failed to write updated TOML contents");  
-        
-                println!("{} Sucessfully reset the config file.", Color::Green.paint("[OK]:"));      
+                let new_config_contents = to_string_pretty(&Config::default())
+                    .expect("Failed to serialize struct to TOML");
+                fs::write("./config.toml", new_config_contents)
+                    .expect("Failed to write updated TOML contents");
+
+                println!(
+                    "{} Sucessfully created the config file.",
+                    Color::Green.paint("[OK]:")
+                );
+            } else {
+                println!(
+                    "{} Using default config file.",
+                    Color::Blue.paint("[INFO]:")
+                );
+                println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));
+                return Config::default();
             }
         }
     }
-       } else {
-        if Confirm::with_theme(&ColorfulTheme::default())
-        .with_prompt(format!("{} The config file can't be found, would you like to create one now?", Color::Purple.paint("[STRANGE]:")))
-        .wait_for_newline(true)
-        .interact()
-        .unwrap()
-    {
-        println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
-
-        let new_config_contents = to_string_pretty(&Config::default()).expect("Failed to serialize struct to TOML");
-        fs::write("./config.toml", new_config_contents).expect("Failed to write updated TOML contents");  
-
-        println!("{} Sucessfully created the config file.", Color::Green.paint("[OK]:"));      
-    } else {
-        println!("{} Using default config file.", Color::Blue.paint("[INFO]:"));
-        println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));      
-        return Config::default();
-    }
-   }
-}
 }
 
 pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
@@ -147,12 +169,11 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     if config.basic.do_gen_tts {
         if config.extra.use_external_sentence_api {
             options.push(("quote_gen_ext", 5));
-        } 
+        }
         if !config.extra.no_local_sentence_gen {
             options.push(("quote_gen", 5));
         }
     }
-    
 
     return options;
 }

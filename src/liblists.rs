@@ -1,4 +1,4 @@
-use enigo::{ Key, Key::Unicode };
+use enigo::{Key, Key::Unicode};
 
 /* Keyboard lists */
 pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
@@ -48,7 +48,7 @@ pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
     (Unicode('\''), 1),
     (Unicode(','), 1),
     (Unicode('.'), 1),
-    (Unicode('/'), 1)
+    (Unicode('/'), 1),
 ];
 
 pub static FUNCTION_KEYS: [(Key, usize); 24] = [
@@ -75,7 +75,7 @@ pub static FUNCTION_KEYS: [(Key, usize); 24] = [
     (Key::F21, 1),
     (Key::F22, 1),
     (Key::F23, 1),
-    (Key::F24, 1)
+    (Key::F24, 1),
 ];
 
 pub static MODIFIER_KEYS: [(Key, usize); 7] = [
@@ -85,7 +85,7 @@ pub static MODIFIER_KEYS: [(Key, usize); 7] = [
     (Key::Alt, 1),
     (Key::Shift, 1),
     (Key::LShift, 1),
-    (Key::RShift, 1)
+    (Key::RShift, 1),
 ];
 
 pub static SPECIAL_KEYS: [(Key, usize); 36] = [
@@ -124,7 +124,7 @@ pub static SPECIAL_KEYS: [(Key, usize); 36] = [
     (Key::Decimal, 1),
     (Key::Divide, 1),
     (Key::Multiply, 1),
-    (Key::Subtract, 1)
+    (Key::Subtract, 1),
 ];
 
 /* Mouse action lists */
@@ -132,27 +132,26 @@ pub static MOUSE_CLICKS: [(&str, usize); 6] = [
     ("mouse_down_left", 1),
     ("mouse_down_right", 1),
     ("mouse_down_middle", 1),
-
     ("mouse_click_left", 5),
     ("mouse_click_right", 5),
-    ("mouse_click_middle", 5)
+    ("mouse_click_middle", 5),
 ];
 
 pub static MOUSE_MOVE: [(&str, usize); 8] = [
-    ("mouse_move_abs", 1), 
-    ("mouse_move_rel", 1), 
-    ("mouse_drag_abs_std", 5), 
-    ("mouse_drag_rel_std", 5), 
+    ("mouse_move_abs", 1),
+    ("mouse_move_rel", 1),
+    ("mouse_drag_abs_std", 5),
+    ("mouse_drag_rel_std", 5),
     ("mouse_drag_abs_fst", 2),
     ("mouse_drag_rel_fst", 3),
-    ("mouse_drag_abs_slw", 2), 
-    ("mouse_drag_rel_slw", 3)
+    ("mouse_drag_abs_slw", 2),
+    ("mouse_drag_rel_slw", 3),
 ];
 
 pub static MOUSE_SCROLL: [(&str, usize); 3] = [
     ("mouse_scroll_x", 2),
     ("mouse_scroll_y", 2),
-    ("mouse_scroll_xy", 1)
+    ("mouse_scroll_xy", 1),
 ];
 
 /* Quotes */
@@ -165,21 +164,21 @@ pub static QUOTES_NEGATIVE: [(&str, usize); 9] = [
     ("i hope you die in a fire", 1),
     ("i hate you", 1),
     ("you have a large ass forehead", 1),
-    ("bozo", 1)
+    ("bozo", 1),
 ];
 
 pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
     ("nice computer you have here", 1),
     ("you seem cool", 1),
     ("wowza", 1),
-    ("you're doing great", 1)
+    ("you're doing great", 1),
 ];
 
 pub static QUOTES_QUESTION: [(&str, usize); 4] = [
     ("what graphics card is this?", 1),
     ("what games you got?", 1),
     ("where's your father, huh?", 1),
-    ("how does this work?", 1)
+    ("how does this work?", 1),
 ];
 
 pub static QUOTES_STATEMENT: [(&str, usize); 6] = [
@@ -188,7 +187,7 @@ pub static QUOTES_STATEMENT: [(&str, usize); 6] = [
     ("what a mess", 1),
     ("i'm going to break this computer", 1),
     ("it's wizard time. fireball!", 1),
-    ("butter dog", 1)
+    ("butter dog", 1),
 ];
 
 /* Gamepad action lists */
@@ -204,7 +203,7 @@ pub static GAMEPAD_BUTTONS: [(Key, usize); 12] = [
     (Key::GamepadRightShoulder, 1),
     (Key::GamepadRightTrigger, 2),
     (Key::GamepadX, 3),
-    (Key::GamepadY, 3)
+    (Key::GamepadY, 3),
 ];
 
 pub static GAMEPAD_MOVE: [(Key, usize); 8] = [
@@ -215,12 +214,12 @@ pub static GAMEPAD_MOVE: [(Key, usize); 8] = [
     (Key::GamepadRightThumbstickDown, 1),
     (Key::GamepadRightThumbstickLeft, 1),
     (Key::GamepadRightThumbstickRight, 1),
-    (Key::GamepadRightThumbstickUp, 1)
+    (Key::GamepadRightThumbstickUp, 1),
 ];
 
 pub static GAMEPAD_SPECIAL: [(Key, usize); 4] = [
     (Key::GamepadLeftThumbstickButton, 1),
     (Key::GamepadMenu, 1),
     (Key::GamepadRightThumbstickButton, 1),
-    (Key::GamepadView, 1)
+    (Key::GamepadView, 1),
 ];
