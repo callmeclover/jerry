@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "invisibility", windows_subsystem = "windows")]
+
 mod libconf;
 mod libfunc;
 mod liblists;

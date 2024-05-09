@@ -116,33 +116,43 @@ pub async fn get_config() -> Config {
                 }
             }
         } else {
-            if Confirm::with_theme(&ColorfulTheme::default())
-                .with_prompt(format!(
-                    "{} The config file can't be found, would you like to create one now?",
-                    Color::Purple.paint("[STRANGE]:")
-                ))
-                .wait_for_newline(true)
-                .interact()
-                .unwrap()
+            #[cfg(feature = "invisibility")]
             {
-                println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
-
                 let new_config_contents = to_string_pretty(&Config::default())
                     .expect("Failed to serialize struct to TOML");
                 fs::write("./config.toml", new_config_contents)
                     .expect("Failed to write updated TOML contents");
+            }
+            #[cfg(not(feature = "invisibility"))]
+            {
+                if Confirm::with_theme(&ColorfulTheme::default())
+                    .with_prompt(format!(
+                        "{} The config file can't be found, would you like to create one now?",
+                        Color::Purple.paint("[STRANGE]:")
+                    ))
+                    .wait_for_newline(true)
+                    .interact()
+                    .unwrap()
+                {
+                    println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
 
-                println!(
-                    "{} Sucessfully created the config file.",
-                    Color::Green.paint("[OK]:")
-                );
-            } else {
-                println!(
-                    "{} Using default config file.",
-                    Color::Blue.paint("[INFO]:")
-                );
-                println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));
-                return Config::default();
+                    let new_config_contents = to_string_pretty(&Config::default())
+                        .expect("Failed to serialize struct to TOML");
+                    fs::write("./config.toml", new_config_contents)
+                        .expect("Failed to write updated TOML contents");
+
+                    println!(
+                        "{} Sucessfully created the config file.",
+                        Color::Green.paint("[OK]:")
+                    );
+                } else {
+                    println!(
+                        "{} Using default config file.",
+                        Color::Blue.paint("[INFO]:")
+                    );
+                    println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));
+                    return Config::default();
+                }
             }
         }
     }
