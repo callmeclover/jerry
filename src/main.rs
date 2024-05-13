@@ -1,13 +1,13 @@
 #![cfg_attr(feature = "invisibility", windows_subsystem = "windows")]
 
-mod libconf;
-mod libfunc;
-mod liblists;
+mod config;
+mod func;
+mod lists;
 use ansi_term::Color;
 use std::fs::*;
 use enigo::*;
-use libconf::*;
-use libfunc::main_logic;
+use config::*;
+use func::main_logic;
 use tts::*;
 
 #[tokio::main]

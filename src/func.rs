@@ -1,4 +1,4 @@
-use crate::liblists::*;
+use crate::lists::*;
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};
 use enigo::*;
