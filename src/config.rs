@@ -4,6 +4,7 @@ use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Default)]
 pub struct Config {
     #[allow(dead_code)] // Disable dead code warning for the entire struct
     basic: Basic,
@@ -28,6 +29,7 @@ struct Basic {
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Default)]
 struct Extra {
     #[allow(dead_code)]
     do_debugging: bool,
@@ -58,31 +60,9 @@ impl Default for Basic {
     }
 }
 
-impl Default for Extra {
-    fn default() -> Self {
-        Extra {
-            #[allow(dead_code)]
-            do_debugging: false,
-            #[allow(dead_code)]
-            enable_debugging_extras: false,
-            #[allow(dead_code)]
-            use_external_sentence_api: false,
-            #[allow(dead_code)]
-            no_local_sentence_gen: false,
-        }
-    }
-}
 
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            #[allow(dead_code)]
-            basic: Basic::default(),
-            #[allow(dead_code)]
-            extra: Extra::default(),
-        }
-    }
-}
+
+
 
 pub async fn get_config() -> Config {
     loop {
@@ -188,5 +168,5 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         }
     }
 
-    return options;
+    options
 }

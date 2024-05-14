@@ -104,9 +104,7 @@ fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
             }
             _=>{}
         }
-    } else {
-
-    }
+    } 
     gamepad.inject();
     //let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
 }
@@ -129,13 +127,13 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let click: &str = list[index2.sample(rng)].0;
 
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
-        let typeclick: Button = convert_mouse_action(click.split("_").collect::<Vec<_>>()[2])
+        let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
         mouse::down(typeclick);
         thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
         mouse::up(typeclick);
     } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
-        let typeclick: Button = convert_mouse_action(click.split("_").collect::<Vec<_>>()[2])
+        let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
         mouse::click(typeclick);
     } else {
@@ -225,7 +223,7 @@ fn quote_gen(tts: &mut Tts) {
 }
 
 async fn quote_gen_ext(tts: &mut Tts) {
-    if let Ok(_) = ping::ping(std::net::IpAddr::from_str("8.8.8.8").unwrap(),None,None,None,None,None) {
+    if ping::ping(std::net::IpAddr::from_str("8.8.8.8").unwrap(),None,None,None,None,None).is_ok() {
         let quote: &str = &reqwest::get("http://metaphorpsum.com/sentences/1/").await
             .expect("could not get external sentence api")
             .text().await
@@ -249,7 +247,7 @@ fn screenshot(tts: &mut Tts) {
     }
 }
 
-pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: &mut Enigo, gamepadobj: &mut GamepadInjector) {
+pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut GamepadInjector) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
     let index: WeightedIndex<usize> =
