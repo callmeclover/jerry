@@ -183,6 +183,9 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         if !config.extra.no_local_sentence_gen {
             options.push(("quote_gen", 5));
         }
+        if config.extra.no_local_sentence_gen && !config.extra.use_external_sentence_api {
+            println!("`do_gen_tts` is active, but no sentence generator is selected. is this supposed to be on?");
+        }
     }
 
     return options;

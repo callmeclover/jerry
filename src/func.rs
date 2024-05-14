@@ -1,4 +1,4 @@
-use crate::lists::*;
+use crate::{lists::*, GamepadInjector};
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};
 use enigo::*;
@@ -83,7 +83,7 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     }
 }
 
-fn gamepad(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
+fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(Key, usize)>, usize)> = vec![
         (GAMEPAD_BUTTONS.to_vec(), 5),
         (GAMEPAD_MOVE.to_vec(), 3),
@@ -94,7 +94,21 @@ fn gamepad(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let list: &Vec<(Key, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> =
         WeightedIndex::new(list.iter().map(|item: &(Key, usize)| item.1)).unwrap();
-    let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
+    if list == &GAMEPAD_MOVE.to_vec() {
+        match list[index2.sample(rng)].0 {
+            Key::GamepadLeftThumbstickDown => {
+                gamepad.update_left_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+            }
+            Key::GamepadRightThumbstickDown => {
+                gamepad.update_right_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+            }
+            _=>{}
+        }
+    } else {
+
+    }
+    gamepad.inject();
+    //let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
 }
 
 fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
@@ -235,16 +249,15 @@ fn screenshot(tts: &mut Tts) {
     }
 }
 
-// TODO: add functions to select inputs
-pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: &mut Enigo) {
+pub async fn main_logic(options: &Vec<(&str, usize)>, tts: &mut Tts, mut enigo: &mut Enigo, gamepadobj: &mut GamepadInjector) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
     let index: WeightedIndex<usize> =
         WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
     match options[index.sample(&mut rng)].0 {
-        "keyboard" => keyboard(&mut enigo, &mut rng),
-        "gamepad" => gamepad(&mut enigo, &mut rng),
-        "mouse" => mouse(&mut enigo, &mut rng),
+        "keyboard" => keyboard(enigo, &mut rng),
+        "gamepad" => gamepad(gamepadobj, &mut rng),
+        "mouse" => mouse(enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
         "quote_gen" => quote_gen(tts),

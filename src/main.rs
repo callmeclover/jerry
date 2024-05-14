@@ -3,10 +3,12 @@
 mod config;
 mod func;
 mod lists;
+mod model;
 use ansi_term::Color;
 use std::fs::*;
 use enigo::*;
 use config::*;
+use model::*;
 use func::main_logic;
 use tts::*;
 
@@ -17,7 +19,7 @@ async fn main() {
     println!("\n{} Starting Jerry...", Color::Blue.paint("[INFO]:"));
     println!("{} Jerry has been started!\n", Color::Green.paint("[OK]:"));
 
-    if !metadata("screenshots").is_ok() {
+    if metadata("screenshots").is_err() {
         let _ = create_dir("screenshots");
     }
 
@@ -29,8 +31,9 @@ async fn main() {
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
+    let mut gamepad = GamepadInjector::new();
 
     loop {
-        main_logic(&options, &mut tts, &mut enigo).await;
+        main_logic(&options, &mut tts, &mut enigo, &mut gamepad).await;
     }
 }

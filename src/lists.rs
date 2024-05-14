@@ -206,15 +206,9 @@ pub static GAMEPAD_BUTTONS: [(Key, usize); 12] = [
     (Key::GamepadY, 3),
 ];
 
-pub static GAMEPAD_MOVE: [(Key, usize); 8] = [
+pub static GAMEPAD_MOVE: [(Key, usize); 2] = [
     (Key::GamepadLeftThumbstickDown, 1),
-    (Key::GamepadLeftThumbstickLeft, 1),
-    (Key::GamepadLeftThumbstickRight, 1),
-    (Key::GamepadLeftThumbstickUp, 1),
-    (Key::GamepadRightThumbstickDown, 1),
-    (Key::GamepadRightThumbstickLeft, 1),
-    (Key::GamepadRightThumbstickRight, 1),
-    (Key::GamepadRightThumbstickUp, 1),
+    (Key::GamepadRightThumbstickDown, 1)
 ];
 
 pub static GAMEPAD_SPECIAL: [(Key, usize); 4] = [
