@@ -191,29 +191,29 @@ pub static QUOTES_STATEMENT: [(&str, usize); 6] = [
 ];
 
 /* Gamepad action lists */
-pub static GAMEPAD_BUTTONS: [(Key, usize); 12] = [
-    (Key::GamepadA, 3),
-    (Key::GamepadB, 3),
-    (Key::GamepadDPadDown, 1),
-    (Key::GamepadDPadLeft, 1),
-    (Key::GamepadDPadRight, 1),
-    (Key::GamepadDPadUp, 1),
-    (Key::GamepadLeftShoulder, 1),
-    (Key::GamepadLeftTrigger, 2),
-    (Key::GamepadRightShoulder, 1),
-    (Key::GamepadRightTrigger, 2),
-    (Key::GamepadX, 3),
-    (Key::GamepadY, 3),
+pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
+    ("A", 3),
+    ("B", 3),
+    ("X", 3),
+    ("Y", 3),
+    ("DPadDown", 1),
+    ("DPadLeft", 1),
+    ("DPadRight", 1),
+    ("DPadUp", 1),
+    ("LeftShoulder", 1),
+    ("LeftTrigger", 2),
+    ("RightShoulder", 1),
+    ("RightTrigger", 2),
 ];
 
-pub static GAMEPAD_MOVE: [(Key, usize); 2] = [
-    (Key::GamepadLeftThumbstickDown, 1),
-    (Key::GamepadRightThumbstickDown, 1)
+pub static GAMEPAD_MOVE: [(&str, usize); 2] = [
+    ("LeftThumbstickMove", 1),
+    ("RightThumbstickMove", 1)
 ];
 
-pub static GAMEPAD_SPECIAL: [(Key, usize); 4] = [
-    (Key::GamepadLeftThumbstickButton, 1),
-    (Key::GamepadMenu, 1),
-    (Key::GamepadRightThumbstickButton, 1),
-    (Key::GamepadView, 1),
+pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
+    ("LeftThumbstick", 1),
+    ("Menu", 1),
+    ("RightThumbstick", 1),
+    ("View", 1),
 ];

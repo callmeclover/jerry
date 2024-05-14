@@ -77,10 +77,9 @@ pub async fn get_config() -> Config {
                         return config;
                     }
                     Err(_err) => {
-                        println!("{} The config file has either been incorrectly modified or has had a section removed.", Color::Red.paint("[ERR]:"));
+                        println!("The config file has either been incorrectly modified or has had a section removed.");
                         println!(
-                            "{} Resetting the config file...",
-                            Color::Blue.paint("[INFO]:")
+                            "Resetting the config file..."
                         );
 
                         let new_config_contents = to_string_pretty(&Config::default())
@@ -89,8 +88,7 @@ pub async fn get_config() -> Config {
                             .expect("Failed to write updated TOML contents");
 
                         println!(
-                            "{} Sucessfully reset the config file.",
-                            Color::Green.paint("[OK]:")
+                            "Sucessfully reset the config file."
                         );
                     }
                 }
@@ -107,14 +105,13 @@ pub async fn get_config() -> Config {
             {
                 if Confirm::with_theme(&ColorfulTheme::default())
                     .with_prompt(format!(
-                        "{} The config file can't be found, would you like to create one now?",
-                        Color::Purple.paint("[STRANGE]:")
+                        "The config file can't be found, would you like to create one now?"
                     ))
                     .wait_for_newline(true)
                     .interact()
                     .unwrap()
                 {
-                    println!("{} Creating config file...", Color::Blue.paint("[INFO]:"));
+                    println!("Creating config file...");
 
                     let new_config_contents = to_string_pretty(&Config::default())
                         .expect("Failed to serialize struct to TOML");
@@ -122,15 +119,13 @@ pub async fn get_config() -> Config {
                         .expect("Failed to write updated TOML contents");
 
                     println!(
-                        "{} Sucessfully created the config file.",
-                        Color::Green.paint("[OK]:")
+                        "Sucessfully created the config file."
                     );
                 } else {
                     println!(
-                        "{} Using default config file.",
-                        Color::Blue.paint("[INFO]:")
+                        "Using default config file."
                     );
-                    println!("{} Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.", Color::Yellow.paint("[WARN]:"));
+                    println!("Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.");
                     return Config::default();
                 }
             }

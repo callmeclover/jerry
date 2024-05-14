@@ -84,29 +84,35 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
 }
 
 fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
-    let lists: Vec<(Vec<(Key, usize)>, usize)> = vec![
+    let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (GAMEPAD_BUTTONS.to_vec(), 5),
         (GAMEPAD_MOVE.to_vec(), 3),
         (GAMEPAD_SPECIAL.to_vec(), 1),
     ];
     let index: WeightedIndex<usize> =
-        WeightedIndex::new(lists.iter().map(|item: &(Vec<(Key, usize)>, usize)| item.1)).unwrap();
+        WeightedIndex::new(lists.iter().map(|item: &(Vec<(&str, usize)>, usize)| item.1)).unwrap();
     let list: &Vec<(Key, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> =
-        WeightedIndex::new(list.iter().map(|item: &(Key, usize)| item.1)).unwrap();
-    if list == &GAMEPAD_MOVE.to_vec() {
-        match list[index2.sample(rng)].0 {
-            Key::GamepadLeftThumbstickDown => {
+        WeightedIndex::new(list.iter().map(|item: &(&str, usize)| item.1)).unwrap();
+    let action = list[index2.sample(rng)].0;
+    match action {
+            "LeftThumbstickMove" => {
                 gamepad.update_left_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
             }
-            Key::GamepadRightThumbstickDown => {
+            "RightThumbstickMove" => {
                 gamepad.update_right_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
             }
-            _=>{}
+            "LeftTrigger" => {
+                gamepad.update_left_trigger(rng.gen_range(0.0..=1.0));
+            }
+            "RightTrigger" => {
+                gamepad.update_right_trigger(rng.gen_range(0.0..=1.0)));
+            }
+            _=>{
+                gamepad.toggle_button(action);
+            }
         }
-    } 
     gamepad.inject();
-    //let _ = enigo.key(list[index2.sample(rng)].0, Direction::Click);
 }
 
 fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {

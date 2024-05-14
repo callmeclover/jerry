@@ -22,7 +22,6 @@ async fn main() {
     if metadata("screenshots").is_err() {
         let _ = create_dir("screenshots");
     }
-
     let mut tts: Tts = match Tts::default() {
         Ok(tts) => tts,
         Err(err) => {
