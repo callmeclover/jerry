@@ -91,22 +91,34 @@ fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     ];
     let index: WeightedIndex<usize> =
         WeightedIndex::new(lists.iter().map(|item: &(Vec<(&str, usize)>, usize)| item.1)).unwrap();
-    let list: &Vec<(Key, usize)> = &lists[index.sample(rng)].0;
+    let list: &Vec<(&str, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> =
         WeightedIndex::new(list.iter().map(|item: &(&str, usize)| item.1)).unwrap();
     let action = list[index2.sample(rng)].0;
     match action {
             "LeftThumbstickMove" => {
                 gamepad.update_left_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+                gamepad.inject();
+                thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+                gamepad.update_left_thumbstick((0.0,0.0));
             }
             "RightThumbstickMove" => {
                 gamepad.update_right_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+                gamepad.inject();
+                thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+                gamepad.update_right_thumbstick((0.0,0.0));
             }
             "LeftTrigger" => {
                 gamepad.update_left_trigger(rng.gen_range(0.0..=1.0));
+                gamepad.inject();
+                thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+                gamepad.update_left_trigger(0.0);
             }
             "RightTrigger" => {
-                gamepad.update_right_trigger(rng.gen_range(0.0..=1.0)));
+                gamepad.update_right_trigger(rng.gen_range(0.0..=1.0));
+                gamepad.inject();
+                thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
+                gamepad.update_right_trigger(0.0);
             }
             _=>{
                 gamepad.toggle_button(action);

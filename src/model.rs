@@ -12,20 +12,20 @@ pub struct GamepadInjector {
 impl GamepadInjector {
     pub fn new() -> Self {
         let abs_buttons: HashMap<String, bool> = HashMap::from([
-            ("A", false),
-            ("B", false),
-            ("DPadDown", false),
-            ("DPadLeft", false),
-            ("DPadRight", false),
-            ("DPadUp", false),
-            ("LeftShoulder", false),
-            ("LeftThumbstick", false),
-            ("Menu", false),
-            ("RightShoulder", false),
-            ("RightThumbstick", false),
-            ("View", false),
-            ("X", false),
-            ("Y", false),
+            ("A".to_string(), false),
+            ("B".to_string(), false),
+            ("DPadDown".to_string(), false),
+            ("DPadLeft".to_string(), false),
+            ("DPadRight".to_string(), false),
+            ("DPadUp".to_string(), false),
+            ("LeftShoulder".to_string(), false),
+            ("LeftThumbstick".to_string(), false),
+            ("Menu".to_string(), false),
+            ("RightShoulder".to_string(), false),
+            ("RightThumbstick".to_string(), false),
+            ("View".to_string(), false),
+            ("X".to_string(), false),
+            ("Y".to_string(), false),
         ]);
         let injector: InputInjector = InputInjector::TryCreate().unwrap();
         injector.InitializeGamepadInjection().unwrap();
@@ -38,32 +38,23 @@ impl GamepadInjector {
     }
 
     pub fn buttons(&self) -> GamepadButtons {
-        self.gamepad_state.Buttons()
+        self.gamepad_state.Buttons().unwrap()
     }
 
     pub fn toggle_button(&mut self, button: &str) {
-        if self.abs_buttons.contains(button.to_string()) {
-            if !self.abs_buttons.get(button.to_string()) {
-                self.abs_buttons.insert(button, true);
-                self.update_buttons(self.buttons() |= get_value_of_button(button));
+        if self.abs_buttons.contains_key(button) {
+            if !self.abs_buttons.get(button).unwrap() {
+                self.abs_buttons.insert(button.to_string(), true);
+                let mut buttons = self.buttons();
+                buttons |= get_value_of_button(button);
+                self.update_buttons(buttons);
             } else {
-                self.abs_buttons.insert(button, false);
-                self.update_buttons(self.buttons() |= get_value_of_button(button));
+                self.abs_buttons.insert(button.to_string(), false);
+                let mut buttons = self.buttons();
+                buttons |= get_value_of_button(button);
+                self.update_buttons(buttons);
             }
         }
-    }
-
-    pub fn update(
-        &mut self,
-        buttons: GamepadButtons,
-        left_thumbstick: (f64, f64),
-        right_thumbstick: (f64, f64),
-    ) {
-        let _ = self.gamepad_state.SetButtons(buttons);
-        let _ = self.gamepad_state.SetLeftThumbstickX(left_thumbstick.0);
-        let _ = self.gamepad_state.SetLeftThumbstickY(left_thumbstick.1);
-        let _ = self.gamepad_state.SetRightThumbstickX(right_thumbstick.0);
-        let _ = self.gamepad_state.SetRightThumbstickY(right_thumbstick.1);
     }
 
     pub fn update_left_thumbstick(&mut self, left_thumbstick: (f64, f64)) {
@@ -80,7 +71,7 @@ impl GamepadInjector {
     pub fn update_right_trigger(&mut self, right_trigger: f64) {
         let _ = self.gamepad_state.SetRightTrigger(right_trigger.clamp(0.0, 1.0));
     }
-    pub fn update_buttons(&mut self, buttons: GamepadButtons>) {
+    pub fn update_buttons(&mut self, buttons: GamepadButtons) {
         let _ = self.gamepad_state.SetButtons(buttons);
     }
 

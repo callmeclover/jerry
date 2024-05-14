@@ -1,4 +1,3 @@
-use ansi_term::Color;
 use dialoguer::{theme::ColorfulTheme, Confirm};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
@@ -104,9 +103,7 @@ pub async fn get_config() -> Config {
             #[cfg(not(feature = "invisibility"))]
             {
                 if Confirm::with_theme(&ColorfulTheme::default())
-                    .with_prompt(format!(
-                        "The config file can't be found, would you like to create one now?"
-                    ))
+                    .with_prompt("The config file can't be found, would you like to create one now?".to_string())
                     .wait_for_newline(true)
                     .interact()
                     .unwrap()

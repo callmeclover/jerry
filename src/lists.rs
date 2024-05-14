@@ -155,7 +155,7 @@ pub static MOUSE_SCROLL: [(&str, usize); 3] = [
 ];
 
 /* Quotes */
-pub static QUOTES_NEGATIVE: [(&str, usize); 9] = [
+pub static QUOTES_NEGATIVE: [(&str, usize); 11] = [
     ("i don't like you", 1),
     ("you have no friends", 1),
     ("loser", 1),
@@ -165,29 +165,37 @@ pub static QUOTES_NEGATIVE: [(&str, usize); 9] = [
     ("i hate you", 1),
     ("you have a large ass forehead", 1),
     ("bozo", 1),
+    ("you talk like a redditor", 1),
+    ("are you caseoh junior, mr. fatass?", 1),
 ];
 
-pub static QUOTES_POSITIVE: [(&str, usize); 4] = [
+pub static QUOTES_POSITIVE: [(&str, usize); 5] = [
     ("nice computer you have here", 1),
     ("you seem cool", 1),
     ("wowza", 1),
     ("you're doing great", 1),
+    ("nice wifi", 1),
 ];
 
-pub static QUOTES_QUESTION: [(&str, usize); 4] = [
+pub static QUOTES_QUESTION: [(&str, usize); 7] = [
     ("what graphics card is this?", 1),
     ("what games you got?", 1),
     ("where's your father, huh?", 1),
     ("how does this work?", 1),
+    ("were you also abandoned as a child?", 1),
+    ("i've won, but at what cost?", 1),
+    ("did you know that in terms of male human and female pokémon breeding, vaporeon is the most compatible Pokémon for humans?", 1)
 ];
 
-pub static QUOTES_STATEMENT: [(&str, usize); 6] = [
+pub static QUOTES_STATEMENT: [(&str, usize); 8] = [
     ("i'm bored", 1),
     ("i am chaos", 1),
     ("what a mess", 1),
     ("i'm going to break this computer", 1),
     ("it's wizard time. fireball!", 1),
     ("butter dog", 1),
+    ("damn shawty", 1),
+    ("WE'RE GONNA CRAAAAAAAAASH", 1),
 ];
 
 /* Gamepad action lists */
