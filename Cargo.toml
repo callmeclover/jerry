@@ -6,6 +6,7 @@ authors = ["Clover Johnson <cats11134@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/callmeclover/jerry"
 build = "build.rs"
+edition = "2021"
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2024"
