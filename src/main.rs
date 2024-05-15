@@ -36,10 +36,10 @@ async fn main() {
 
     #[cfg(feature = "advanced")]
     loop {
-        main_logic(&options, &mut tts, &mut enigo).await;
+        main_logic_adv(&options, &mut tts, &mut enigo).await;
     }
     #[not(cfg(feature = "advanced"))]
     loop {
-        main_logic_adv(&options, &mut tts, &mut enigo, &mut gamepad).await;
+        main_logic(&options, &mut tts, &mut enigo, &mut gamepad).await;
     }
 }
