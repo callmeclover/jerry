@@ -16,8 +16,8 @@ use tts::*;
 async fn main() {
     let options: Vec<(&str, usize)> = get_options(get_config().await).await;
 
-    println!("\n{} Starting Jerry...", Color::Blue.paint("[INFO]:"));
-    println!("{} Jerry has been started!\n", Color::Green.paint("[OK]:"));
+    println!("\n Starting Jerry...");
+    println!("Jerry has been started!\n");
 
     if metadata("screenshots").is_err() {
         let _ = create_dir("screenshots");
@@ -30,7 +30,10 @@ async fn main() {
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
-    let mut gamepad = GamepadInjector::new();
+    let mut gamepad = None;
+    if cfg!(feature = "advanced") {
+        gamepad = Some(GamepadInjector::new());
+    }
 
     loop {
         main_logic(&options, &mut tts, &mut enigo, &mut gamepad).await;

@@ -15,7 +15,7 @@ pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
     (Key::K, 4),
     (Key::L, 4),
     (Key::M, 4),
-    (Key::N, 4),
+    (Key::N, 8),
     (Key::O, 4),
     (Key::P, 4),
     (Key::Q, 4),
@@ -187,7 +187,7 @@ pub static QUOTES_QUESTION: [(&str, usize); 7] = [
     ("did you know that in terms of male human and female pokémon breeding, vaporeon is the most compatible Pokémon for humans?", 1)
 ];
 
-pub static QUOTES_STATEMENT: [(&str, usize); 8] = [
+pub static QUOTES_STATEMENT: [(&str, usize); 9] = [
     ("i'm bored", 1),
     ("i am chaos", 1),
     ("what a mess", 1),
@@ -196,6 +196,7 @@ pub static QUOTES_STATEMENT: [(&str, usize); 8] = [
     ("butter dog", 1),
     ("damn shawty", 1),
     ("WE'RE GONNA CRAAAAAAAAASH", 1),
+    ("do a flip!", 1)
 ];
 
 /* Gamepad action lists */
@@ -215,7 +216,7 @@ pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
 ];
 
 pub static GAMEPAD_MOVE: [(&str, usize); 2] = [
-    ("LeftThumbstickMove", 1),
+    ("LeftThumbstickMove", 2),
     ("RightThumbstickMove", 1)
 ];
 
@@ -225,3 +226,8 @@ pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
     ("RightThumbstick", 1),
     ("View", 1),
 ];
+
+/* Pen action lists */
+
+
+/* Touch action lists */

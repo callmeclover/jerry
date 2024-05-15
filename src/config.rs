@@ -20,6 +20,10 @@ struct Basic {
     #[allow(dead_code)]
     use_controller: bool,
     #[allow(dead_code)]
+    use_pen: bool,
+    #[allow(dead_code)]
+    use_touch: bool,
+    #[allow(dead_code)]
     do_screenshots: bool,
     #[allow(dead_code)]
     do_tts: bool,
@@ -139,7 +143,7 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     if config.basic.use_keyboard {
         options.push(("keyboard", 50));
     }
-    if config.basic.use_controller {
+    if config.basic.use_controller && cfg!(feature = "advanced") {
         options.push(("gamepad", 50));
     }
     if config.basic.do_screenshots {

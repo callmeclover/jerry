@@ -265,14 +265,14 @@ fn screenshot(tts: &mut Tts) {
     }
 }
 
-pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut GamepadInjector) {
+pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut Option<GamepadInjector>) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
     let index: WeightedIndex<usize> =
         WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
     match options[index.sample(&mut rng)].0 {
         "keyboard" => keyboard(enigo, &mut rng),
-        "gamepad" => gamepad(gamepadobj, &mut rng),
+        "gamepad" => gamepad(gamepadobj.unwrap(), &mut rng),
         "mouse" => mouse(enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
