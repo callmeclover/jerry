@@ -9,4 +9,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
             toolchain: stable
-      - run: cargo clippy --features advanced,invisibility
+      - name: clippy
+        run: cargo clippy
+      - name: clippy adv
+        run: cargo clippy --features advanced
+      - name: clippy inv
+        run: cargo clippy --features invisibility
+      - name: clippy adv,inv
+        run: cargo clippy --features advanced,invisibility

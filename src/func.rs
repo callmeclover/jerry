@@ -272,7 +272,7 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
         WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
     match options[index.sample(&mut rng)].0 {
         "keyboard" => keyboard(enigo, &mut rng),
-        "gamepad" => gamepad(&mut gamepadobj.unwrap(), &mut rng),
+        "gamepad" => gamepad(&mut gamepadobj.unwrap().as_mut(), &mut rng),
         "mouse" => mouse(enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
