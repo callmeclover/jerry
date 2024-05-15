@@ -10,7 +10,7 @@ use model::*;
 use std::fs::*;
 use enigo::*;
 use config::*;
-use func::main_logic;
+use func::*;
 use tts::*;
 
 #[tokio::main]
@@ -31,12 +31,15 @@ async fn main() {
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
-    let mut gamepad = None;
-    if cfg!(feature = "advanced") {
-        gamepad = Some(GamepadInjector::new());
-    }
+    #[cfg(feature = "advanced")]
+    let mut gamepad = GamepadInjector::new();
 
+    #[cfg(feature = "advanced")]
     loop {
-        main_logic(&options, &mut tts, &mut enigo, &mut gamepad).await;
+        main_logic(&options, &mut tts, &mut enigo).await;
+    }
+    #[not(cfg(feature = "advanced"))]
+    loop {
+        main_logic_adv(&options, &mut tts, &mut enigo, &mut gamepad).await;
     }
 }

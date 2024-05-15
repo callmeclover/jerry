@@ -1,4 +1,6 @@
-use crate::{lists::*, GamepadInjector};
+use crate::lists::*;
+#[cfg(feature = "advanced")]
+use crate::GamepadInjector;
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};
 use enigo::*;
@@ -265,14 +267,33 @@ fn screenshot(tts: &mut Tts) {
     }
 }
 
-pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut Option<GamepadInjector>) {
+pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
     let index: WeightedIndex<usize> =
         WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
     match options[index.sample(&mut rng)].0 {
         "keyboard" => keyboard(enigo, &mut rng),
-        "gamepad" => gamepad(&mut gamepadobj.unwrap().as_mut(), &mut rng),
+        "mouse" => mouse(enigo, &mut rng),
+        "quote" => quote(tts, &mut rng),
+        "screenshot" => screenshot(tts),
+        "quote_gen" => quote_gen(tts),
+        "quote_gen_ext" => quote_gen_ext(tts).await,
+        _ => println!("idk what you did but fix it"),
+    }
+
+    sleep(Duration::from_millis(1500)).await;
+}
+
+#[cfg(feature = "advanced")]
+pub async fn main_logic_adv(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut GamepadInjector) {
+    let mut rng: rand::prelude::ThreadRng = thread_rng();
+
+    let index: WeightedIndex<usize> =
+        WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
+    match options[index.sample(&mut rng)].0 {
+        "keyboard" => keyboard(enigo, &mut rng),
+        "gamepad" => gamepad(gamepadobj, &mut rng),
         "mouse" => mouse(enigo, &mut rng),
         "quote" => quote(tts, &mut rng),
         "screenshot" => screenshot(tts),
