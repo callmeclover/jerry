@@ -3,11 +3,13 @@
 mod config;
 mod func;
 mod lists;
+#[cfg(feature = "advanced")]
 mod model;
+#[cfg(feature = "advanced")]
+use model::*;
 use std::fs::*;
 use enigo::*;
 use config::*;
-use model::*;
 use func::main_logic;
 use tts::*;
 

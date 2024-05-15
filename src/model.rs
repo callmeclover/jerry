@@ -1,5 +1,3 @@
-#[cfg(feature = "advanced")]
-
 use windows::Gaming::Input::GamepadButtons;
 use windows::UI::Input::Preview::Injection::InjectedInputGamepadInfo;
 use windows::UI::Input::Preview::Injection::InputInjector;
