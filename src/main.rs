@@ -4,7 +4,6 @@ mod config;
 mod func;
 mod lists;
 mod model;
-use ansi_term::Color;
 use std::fs::*;
 use enigo::*;
 use config::*;
@@ -16,7 +15,7 @@ use tts::*;
 async fn main() {
     let options: Vec<(&str, usize)> = get_options(get_config().await).await;
 
-    println!("\n Starting Jerry...");
+    println!("\nStarting Jerry...");
     println!("Jerry has been started!\n");
 
     if metadata("screenshots").is_err() {

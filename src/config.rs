@@ -54,6 +54,10 @@ impl Default for Basic {
             #[allow(dead_code)]
             use_controller: false,
             #[allow(dead_code)]
+            use_pen: false,
+            #[allow(dead_code)]
+            use_touch: false,
+            #[allow(dead_code)]
             do_screenshots: true,
             #[allow(dead_code)]
             do_tts: true,
