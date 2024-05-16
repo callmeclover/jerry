@@ -68,10 +68,6 @@ impl Default for Basic {
     }
 }
 
-
-
-
-
 pub async fn get_config() -> Config {
     loop {
         if Path::new("./config.toml").exists() {

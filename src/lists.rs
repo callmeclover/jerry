@@ -199,9 +199,8 @@ pub static QUOTES_STATEMENT: [(&str, usize); 9] = [
     ("do a flip!", 1)
 ];
 
-#[allow(dead_code)]
-{
 /* Gamepad action lists */
+#[allow(dead_code)]
 pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
     ("A", 3),
     ("B", 3),
@@ -217,11 +216,13 @@ pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
     ("RightTrigger", 2),
 ];
 
+#[allow(dead_code)]
 pub static GAMEPAD_MOVE: [(&str, usize); 2] = [
     ("LeftThumbstickMove", 2),
     ("RightThumbstickMove", 1)
 ];
 
+#[allow(dead_code)]
 pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
     ("LeftThumbstick", 1),
     ("Menu", 1),
@@ -230,24 +231,25 @@ pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
 ];
 
 /* Pen action lists */
+#[allow(dead_code)]
 pub static PEN_BUTTONS: [(&str, usize); 3] = [
     ("Barrel", 1),
     ("Eraser", 1),
     ("Inverted", 1),
 ];
 
+#[allow(dead_code)]
 pub static PEN_MOVE: [(&str, usize); 2] = [
     ("XY_Move", 2),
     ("X_Move", 1),
     ("Y_Move", 1)
 ];
 
-pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
+#[allow(dead_code)]
+pub static PEN_SPECIAL: [(&str, usize); 4] = [
     ("Pressure", 1),
     ("Tilt", 1),
     ("Rotation", 1)
 ];
 
 /* Touch action lists */
-
-}

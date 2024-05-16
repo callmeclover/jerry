@@ -289,9 +289,9 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
 
     fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
         let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
-            (GAMEPAD_BUTTONS.to_vec(), 5),
-            (GAMEPAD_MOVE.to_vec(), 3),
-            (GAMEPAD_SPECIAL.to_vec(), 1),
+            (PEN_BUTTONS.to_vec(), 5),
+            (PEN_MOVE.to_vec(), 3),
+            (PEN_SPECIAL.to_vec(), 1),
         ];
         let index: WeightedIndex<usize> =
             WeightedIndex::new(lists.iter().map(|item: &(Vec<(&str, usize)>, usize)| item.1)).unwrap();
