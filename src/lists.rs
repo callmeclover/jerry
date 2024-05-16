@@ -239,14 +239,14 @@ pub static PEN_BUTTONS: [(&str, usize); 3] = [
 ];
 
 #[allow(dead_code)]
-pub static PEN_MOVE: [(&str, usize); 2] = [
+pub static PEN_MOVE: [(&str, usize); 3] = [
     ("XY_Move", 2),
     ("X_Move", 1),
     ("Y_Move", 1)
 ];
 
 #[allow(dead_code)]
-pub static PEN_SPECIAL: [(&str, usize); 4] = [
+pub static PEN_SPECIAL: [(&str, usize); 3] = [
     ("Pressure", 1),
     ("Tilt", 1),
     ("Rotation", 1)

@@ -242,7 +242,6 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
 }
 
 #[cfg(feature = "advanced")]
-{
     fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
         let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
             (GAMEPAD_BUTTONS.to_vec(), 5),
@@ -287,6 +286,7 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
         gamepad.inject();
     }
 
+    #[cfg(feature = "advanced")]
     fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
         let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
             (PEN_BUTTONS.to_vec(), 5),
@@ -328,6 +328,7 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
         pen.inject();
     }
 
+#[cfg(feature = "advanced")]
 pub async fn main_logic_adv(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo, gamepadobj: &mut GamepadInjector, penobj: &mut PenInjector) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
@@ -347,5 +348,4 @@ pub async fn main_logic_adv(options: &[(&str, usize)], tts: &mut Tts, enigo: &mu
     }
 
     sleep(Duration::from_millis(1500)).await;
-}
 }
