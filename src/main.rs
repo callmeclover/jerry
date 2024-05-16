@@ -35,11 +35,13 @@ async fn main() {
     let mut gamepad = GamepadInjector::new();
 
     #[cfg(feature = "advanced")]
-    loop {
-        main_logic_adv(&options, &mut tts, &mut enigo).await;
+    {
+        loop {
+            main_logic_adv(&options, &mut tts, &mut enigo, &mut gamepad).await;
+        }
     }
-    #[not(cfg(feature = "advanced"))]
+    #[allow(unreachable_code)]
     loop {
-        main_logic(&options, &mut tts, &mut enigo, &mut gamepad).await;
+        main_logic(&options, &mut tts, &mut enigo).await;
     }
 }

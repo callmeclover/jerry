@@ -85,6 +85,7 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     }
 }
 
+#[cfg(feature = "advanced")]
 fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (GAMEPAD_BUTTONS.to_vec(), 5),
