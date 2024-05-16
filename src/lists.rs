@@ -251,5 +251,3 @@ pub static PEN_SPECIAL: [(&str, usize); 3] = [
     ("Tilt", 1),
     ("Rotation", 1)
 ];
-
-/* Touch action lists */

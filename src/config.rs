@@ -23,8 +23,6 @@ struct Basic {
     #[allow(dead_code)]
     use_pen: bool,
     #[allow(dead_code)]
-    use_touch: bool,
-    #[allow(dead_code)]
     do_screenshots: bool,
     #[allow(dead_code)]
     do_tts: bool,
@@ -56,8 +54,6 @@ impl Default for Basic {
             use_controller: false,
             #[allow(dead_code)]
             use_pen: false,
-            #[allow(dead_code)]
-            use_touch: false,
             #[allow(dead_code)]
             do_screenshots: true,
             #[allow(dead_code)]
@@ -169,9 +165,6 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         }
         if config.basic.use_pen {
             options.push(("pen", 15));
-        }
-        if config.basic.use_touch {
-            options.push(("touch", 10));
         }
     }
 
