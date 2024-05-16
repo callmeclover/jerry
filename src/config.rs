@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use dialoguer::{theme::ColorfulTheme, Confirm};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
@@ -147,9 +148,6 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
     if config.basic.use_keyboard {
         options.push(("keyboard", 50));
     }
-    if config.basic.use_controller && cfg!(feature = "advanced") {
-        options.push(("gamepad", 50));
-    }
     if config.basic.do_screenshots {
         options.push(("screenshot", 1));
     }
@@ -165,6 +163,19 @@ pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
         }
         if config.extra.no_local_sentence_gen && !config.extra.use_external_sentence_api {
             println!("`do_gen_tts` is active, but no sentence generator is selected. is this supposed to be on?");
+        }
+    }
+
+    #[cfg(feature = "advanced")]
+    {
+        if config.basic.use_controller {
+            options.push(("gamepad", 50));
+        }
+        if config.basic.use_pen {
+            options.push(("pen", 15));
+        }
+        if config.basic.use_touch {
+            options.push(("touch", 10));
         }
     }
 

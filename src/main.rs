@@ -31,13 +31,13 @@ async fn main() {
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
-    #[cfg(feature = "advanced")]
-    let mut gamepad = GamepadInjector::new();
 
     #[cfg(feature = "advanced")]
     {
+        let mut gamepad = GamepadInjector::new();
+        let mut pen = PenInjector::new();
         loop {
-            main_logic_adv(&options, &mut tts, &mut enigo, &mut gamepad).await;
+            main_logic_adv(&options, &mut tts, &mut enigo, &mut gamepad, &mut pen).await;
         }
     }
     #[allow(unreachable_code)]
