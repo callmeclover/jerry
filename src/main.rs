@@ -5,12 +5,12 @@ mod func;
 mod lists;
 #[cfg(feature = "advanced")]
 mod model;
+use config::*;
+use enigo::*;
+use func::*;
 #[cfg(feature = "advanced")]
 use model::*;
 use std::fs::*;
-use enigo::*;
-use config::*;
-use func::*;
 use tts::*;
 
 #[tokio::main]

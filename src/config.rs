@@ -3,8 +3,7 @@ use dialoguer::{theme::ColorfulTheme, Confirm};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-#[derive(Default)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct Config {
     #[allow(dead_code)] // Disable dead code warning for the entire struct
     basic: Basic,
@@ -30,8 +29,7 @@ struct Basic {
     do_gen_tts: bool,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-#[derive(Default)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 struct Extra {
     #[allow(dead_code)]
     do_debugging: bool,
@@ -78,18 +76,14 @@ pub async fn get_config() -> Config {
                     }
                     Err(_err) => {
                         println!("The config file has either been incorrectly modified or has had a section removed.");
-                        println!(
-                            "Resetting the config file..."
-                        );
+                        println!("Resetting the config file...");
 
                         let new_config_contents = to_string_pretty(&Config::default())
                             .expect("Failed to serialize struct to TOML");
                         fs::write("./config.toml", new_config_contents)
                             .expect("Failed to write updated TOML contents");
 
-                        println!(
-                            "Sucessfully reset the config file."
-                        );
+                        println!("Sucessfully reset the config file.");
                     }
                 }
             }
@@ -104,7 +98,10 @@ pub async fn get_config() -> Config {
             #[cfg(not(feature = "invisibility"))]
             {
                 if Confirm::with_theme(&ColorfulTheme::default())
-                    .with_prompt("The config file can't be found, would you like to create one now?".to_string())
+                    .with_prompt(
+                        "The config file can't be found, would you like to create one now?"
+                            .to_string(),
+                    )
                     .wait_for_newline(true)
                     .interact()
                     .unwrap()
@@ -116,13 +113,9 @@ pub async fn get_config() -> Config {
                     fs::write("./config.toml", new_config_contents)
                         .expect("Failed to write updated TOML contents");
 
-                    println!(
-                        "Sucessfully created the config file."
-                    );
+                    println!("Sucessfully created the config file.");
                 } else {
-                    println!(
-                        "Using default config file."
-                    );
+                    println!("Using default config file.");
                     println!("Using a default config is not recomended. To ignore this prompt and gain more customizability, create a dedicated config file.");
                     return Config::default();
                 }

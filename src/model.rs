@@ -1,16 +1,13 @@
+use std::collections::HashMap;
 use windows::Gaming::Input::GamepadButtons;
 use windows::UI::Input::Preview::Injection::{
-    InputInjector,
-    InjectedInputGamepadInfo,
-    InjectedInputPenInfo,
-    InjectedInputPenButtons
+    InjectedInputGamepadInfo, InjectedInputPenButtons, InjectedInputPenInfo, InputInjector,
 };
-use std::collections::HashMap;
 
 pub struct GamepadInjector {
     gamepad_state: InjectedInputGamepadInfo,
     injector: InputInjector,
-    abs_buttons: HashMap<String, bool>
+    abs_buttons: HashMap<String, bool>,
 }
 
 impl GamepadInjector {
@@ -37,7 +34,7 @@ impl GamepadInjector {
         Self {
             gamepad_state,
             injector,
-            abs_buttons
+            abs_buttons,
         }
     }
 
@@ -62,18 +59,30 @@ impl GamepadInjector {
     }
 
     pub fn update_left_thumbstick(&mut self, left_thumbstick: (f64, f64)) {
-        let _ = self.gamepad_state.SetLeftThumbstickX(left_thumbstick.0.clamp(-1.0, 1.0));
-        let _ = self.gamepad_state.SetLeftThumbstickY(left_thumbstick.1.clamp(-1.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetLeftThumbstickX(left_thumbstick.0.clamp(-1.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetLeftThumbstickY(left_thumbstick.1.clamp(-1.0, 1.0));
     }
     pub fn update_right_thumbstick(&mut self, right_thumbstick: (f64, f64)) {
-        let _ = self.gamepad_state.SetRightThumbstickX(right_thumbstick.0.clamp(-1.0, 1.0));
-        let _ = self.gamepad_state.SetRightThumbstickY(right_thumbstick.1.clamp(-1.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetRightThumbstickX(right_thumbstick.0.clamp(-1.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetRightThumbstickY(right_thumbstick.1.clamp(-1.0, 1.0));
     }
     pub fn update_left_trigger(&mut self, left_trigger: f64) {
-        let _ = self.gamepad_state.SetLeftTrigger(left_trigger.clamp(0.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetLeftTrigger(left_trigger.clamp(0.0, 1.0));
     }
     pub fn update_right_trigger(&mut self, right_trigger: f64) {
-        let _ = self.gamepad_state.SetRightTrigger(right_trigger.clamp(0.0, 1.0));
+        let _ = self
+            .gamepad_state
+            .SetRightTrigger(right_trigger.clamp(0.0, 1.0));
     }
     pub fn update_buttons(&mut self, buttons: GamepadButtons) {
         let _ = self.gamepad_state.SetButtons(buttons);
@@ -85,26 +94,25 @@ impl GamepadInjector {
             .unwrap();
     }
 
-
-fn get_value_of_button(button: &str) -> GamepadButtons {
-    match button {
-        "A" => GamepadButtons::A,
-        "B" => GamepadButtons::B,
-        "X" => GamepadButtons::X,
-        "Y" => GamepadButtons::Y,
-        "DPadUp" => GamepadButtons::DPadUp,
-        "DPadDown" => GamepadButtons::DPadDown,
-        "DPadLeft" => GamepadButtons::DPadLeft,
-        "DPadRight" => GamepadButtons::DPadRight,
-        "Menu" => GamepadButtons::Menu,
-        "View" => GamepadButtons::View,
-        "LeftThumbstick" => GamepadButtons::LeftThumbstick,
-        "LeftShoulder" => GamepadButtons::LeftShoulder,
-        "RightThumbstick" => GamepadButtons::RightThumbstick,
-        "RightShoulder" => GamepadButtons::RightShoulder,
-        _ => GamepadButtons(0u32)
+    fn get_value_of_button(button: &str) -> GamepadButtons {
+        match button {
+            "A" => GamepadButtons::A,
+            "B" => GamepadButtons::B,
+            "X" => GamepadButtons::X,
+            "Y" => GamepadButtons::Y,
+            "DPadUp" => GamepadButtons::DPadUp,
+            "DPadDown" => GamepadButtons::DPadDown,
+            "DPadLeft" => GamepadButtons::DPadLeft,
+            "DPadRight" => GamepadButtons::DPadRight,
+            "Menu" => GamepadButtons::Menu,
+            "View" => GamepadButtons::View,
+            "LeftThumbstick" => GamepadButtons::LeftThumbstick,
+            "LeftShoulder" => GamepadButtons::LeftShoulder,
+            "RightThumbstick" => GamepadButtons::RightThumbstick,
+            "RightShoulder" => GamepadButtons::RightShoulder,
+            _ => GamepadButtons(0u32),
+        }
     }
-}
 }
 
 impl Drop for GamepadInjector {
@@ -116,7 +124,7 @@ impl Drop for GamepadInjector {
 pub struct PenInjector {
     pen_state: InjectedInputPenInfo,
     injector: InputInjector,
-    abs_buttons: HashMap<String, bool>
+    abs_buttons: HashMap<String, bool>,
 }
 
 impl PenInjector {
@@ -132,7 +140,7 @@ impl PenInjector {
         Self {
             pen_state,
             injector,
-            abs_buttons
+            abs_buttons,
         }
     }
 
@@ -173,17 +181,19 @@ impl PenInjector {
         let _ = self.pen_state.SetPressure(pressure.clamp(0.0, 1024.0));
     }
 
-    pub fn update_position(&mut self, position: (i32,i32)) {
+    pub fn update_position(&mut self, position: (i32, i32)) {
         let mut info = self.pen_state.PointerInfo().unwrap();
-        if !position.0==-1 { info.PixelLocation.PositionX = position.0; }
-        if !position.1==-1 { info.PixelLocation.PositionY = position.1; }
+        if !position.0 == -1 {
+            info.PixelLocation.PositionX = position.0;
+        }
+        if !position.1 == -1 {
+            info.PixelLocation.PositionY = position.1;
+        }
         let _ = self.pen_state.SetPointerInfo(info);
     }
 
     pub fn inject(&mut self) {
-        self.injector
-            .InjectPenInput(&self.pen_state)
-            .unwrap();
+        self.injector.InjectPenInput(&self.pen_state).unwrap();
     }
 
     fn get_value_of_button(button: &str) -> InjectedInputPenButtons {
@@ -191,7 +201,7 @@ impl PenInjector {
             "Barrel" => InjectedInputPenButtons::Barrel,
             "Eraser" => InjectedInputPenButtons::Eraser,
             "Inverted" => InjectedInputPenButtons::Inverted,
-            _ => InjectedInputPenButtons(0u32)
+            _ => InjectedInputPenButtons(0u32),
         }
     }
 }
