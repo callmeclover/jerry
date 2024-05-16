@@ -211,14 +211,14 @@ pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
     ("DPadRight", 1),
     ("DPadUp", 1),
     ("LeftShoulder", 1),
-    ("LeftTrigger", 2),
+    ("LeftTrigger", 3),
     ("RightShoulder", 1),
-    ("RightTrigger", 2),
+    ("RightTrigger", 3),
 ];
 
 #[allow(dead_code)]
 pub static GAMEPAD_MOVE: [(&str, usize); 2] = [
-    ("LeftThumbstickMove", 2),
+    ("LeftThumbstickMove", 3),
     ("RightThumbstickMove", 1)
 ];
 
