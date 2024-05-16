@@ -50,12 +50,12 @@ impl GamepadInjector {
             if !self.abs_buttons.get(button).unwrap() {
                 self.abs_buttons.insert(button.to_string(), true);
                 let mut buttons = self.buttons();
-                buttons |= self.get_value_of_button(button);
+                buttons |= model::GamepadInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             } else {
                 self.abs_buttons.insert(button.to_string(), false);
                 let mut buttons = self.buttons();
-                buttons |= self.get_value_of_button(button);
+                buttons |= model::GamepadInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             }
         }
@@ -149,12 +149,12 @@ impl PenInjector {
             if !self.abs_buttons.get(button).unwrap() {
                 self.abs_buttons.insert(button.to_string(), true);
                 let mut buttons = self.buttons();
-                buttons |= self.get_value_of_button(button);
+                buttons |= model::PenInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             } else {
                 self.abs_buttons.insert(button.to_string(), false);
                 let mut buttons = self.buttons();
-                buttons |= self.get_value_of_button(button);
+                buttons |= model::PenInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             }
         }
@@ -166,7 +166,7 @@ impl PenInjector {
     }
 
     pub fn update_rotation(&mut self, rotation: f64) {
-        let _ = self.pen_state.SetRotation(tilt.clamp(0.0, 359.0));
+        let _ = self.pen_state.SetRotation(rotation.clamp(0.0, 359.0));
     }
 
     pub fn update_pressure(&mut self, pressure: f64) {
@@ -177,7 +177,7 @@ impl PenInjector {
         let mut info = self.pen_state.PointerInfo().unwrap();
         if !position.0==-1 { info.PixelLocation.PositionX = position.0; }
         if !position.1==-1 { info.PixelLocation.PositionY = position.1; }
-        let _ = self.pen_state.SetPointer(info);
+        let _ = self.pen_state.SetPointerInfo(info);
     }
 
     pub fn inject(&mut self) {

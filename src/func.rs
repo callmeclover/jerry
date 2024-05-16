@@ -1,6 +1,6 @@
 use crate::lists::*;
 #[cfg(feature = "advanced")]
-use crate::GamepadInjector;
+use crate::{GamepadInjector,PenInjector};
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};
 use enigo::*;
