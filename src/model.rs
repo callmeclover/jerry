@@ -50,12 +50,12 @@ impl GamepadInjector {
             if !self.abs_buttons.get(button).unwrap() {
                 self.abs_buttons.insert(button.to_string(), true);
                 let mut buttons = self.buttons();
-                buttons |= model::GamepadInjector::get_value_of_button(button);
+                buttons |= GamepadInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             } else {
                 self.abs_buttons.insert(button.to_string(), false);
                 let mut buttons = self.buttons();
-                buttons |= model::GamepadInjector::get_value_of_button(button);
+                buttons |= GamepadInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             }
         }
@@ -149,12 +149,12 @@ impl PenInjector {
             if !self.abs_buttons.get(button).unwrap() {
                 self.abs_buttons.insert(button.to_string(), true);
                 let mut buttons = self.buttons();
-                buttons |= model::PenInjector::get_value_of_button(button);
+                buttons |= PenInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             } else {
                 self.abs_buttons.insert(button.to_string(), false);
                 let mut buttons = self.buttons();
-                buttons |= model::PenInjector::get_value_of_button(button);
+                buttons |= PenInjector::get_value_of_button(button);
                 self.update_buttons(buttons);
             }
         }

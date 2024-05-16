@@ -311,15 +311,15 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
                 }
                 "XY_Move" => {
                     let display = Screen::from_point(0, 0).unwrap().display_info;
-                    pen.update_position((rng.gen_range(0..=display.width), rng.gen_range(0..=display.height)));
+                    pen.update_position((rng.gen_range(0..=display.width).try_into().unwrap(), rng.gen_range(0..=display.height).try_into().unwrap()));
                 }
                 "X_Move" => {
                     let display = Screen::from_point(0, 0).unwrap().display_info;
-                    pen.update_position((rng.gen_range(0..=display.width), -1));
+                    pen.update_position((rng.gen_range(0..=display.width).try_into().unwrap(), -1));
                 }
                 "Y_Move" => {
                     let display = Screen::from_point(0, 0).unwrap().display_info;
-                    pen.update_position((-1, rng.gen_range(0..=display.height)));
+                    pen.update_position((-1, rng.gen_range(0..=display.height).try_into().unwrap()));
                 }
                 _=>{
                     pen.toggle_button(action);
