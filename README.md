@@ -13,7 +13,7 @@ currently, there are 3 versions (not including crosses of any):
 
 **the `advanced` feature requires administrator privileges. this is why it is seperate from `default`.**
 
-**the `invisibility` feature has no console window, so it cannot be regularly. see [this notice](#other-little-notice) for info on killing a hidden instance.**
+**the `invisibility` feature has no console window, so it cannot be regularly exited out of. see [this notice](#other-little-notice) for info on killing a hidden instance.**
 
 i will also not be publishing any invisible builds for jerry beyond [v0.3.4](https://github.com/callmeclover/jerry/releases/tag/v0.3.4). build it yourself with `cargo build --features invisible`.
 
