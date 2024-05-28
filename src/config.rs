@@ -2,8 +2,8 @@
 use dialoguer::{theme::ColorfulTheme, Confirm};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
-
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+use cached::{proc_macro::cached, SizedCache};
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default, Clone, Eq, Hash, PartialEq)]
 pub struct Config {
     #[allow(dead_code)] // Disable dead code warning for the entire struct
     basic: Basic,
@@ -11,7 +11,7 @@ pub struct Config {
     extra: Extra,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq, Eq, Hash)]
 struct Basic {
     #[allow(dead_code)]
     use_mouse: bool,
@@ -29,7 +29,7 @@ struct Basic {
     do_gen_tts: bool,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default, Clone, Hash, PartialEq, Eq)]
 struct Extra {
     #[allow(dead_code)]
     do_debugging: bool,
@@ -62,7 +62,11 @@ impl Default for Basic {
     }
 }
 
-pub async fn get_config() -> Config {
+#[cached(
+    ty = "SizedCache<String, Config>",
+    create = "{ SizedCache::with_size(1) }",
+)]
+pub fn get_config() -> Config {
     loop {
         if Path::new("./config.toml").exists() {
             loop {

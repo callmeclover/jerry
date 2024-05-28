@@ -15,7 +15,8 @@ use tts::*;
 
 #[tokio::main]
 async fn main() {
-    let options: Vec<(&str, usize)> = get_options(get_config().await).await;
+    let config: Config = get_config().await;
+    let options: Vec<(&str, usize)> = get_options(config).await;
 
     println!("\nStarting Jerry...");
     println!("Jerry has been started!\n");
