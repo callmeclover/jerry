@@ -1,20 +1,19 @@
-use crate::lists::*;
+use crate::{get_config, lists::{ALPHANUMERIC_KEYS, FUNCTION_KEYS, MODIFIER_KEYS, MOUSE_CLICKS, MOUSE_MOVE, MOUSE_SCROLL, QUOTES_NEGATIVE, QUOTES_POSITIVE, QUOTES_QUESTION, QUOTES_STATEMENT, SPECIAL_KEYS}, Speed, SPEED_WEIGHTED_LISTS_SLOW, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL};
 #[cfg(feature = "advanced")]
 use crate::{GamepadInjector, PenInjector};
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};
-use enigo::*;
+use enigo::{Axis, Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse};
 use lazy_static::lazy_static;
 use rand::{
     distributions::{Distribution, WeightedIndex},
     thread_rng, Rng,
 };
 use regex::Regex;
-use rsautogui::{mouse, mouse::Button, mouse::ScrollAxis, mouse::Speed};
 use screenshots::Screen;
-use std::{fs::*, str::FromStr, sync::Mutex, thread};
+use std::{fs::File, str::FromStr, sync::Mutex, thread};
 use tokio::time::{sleep, Duration};
-use tts::*;
+use tts::Tts;
 
 lazy_static! {
     static ref IS_SHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
@@ -27,7 +26,7 @@ lazy_static! {
 }
 
 fn toggle_key_press(key: Key, enigo: &mut Enigo) {
-    let kstr = match key {
+    let kvalue = !*(match key {
         Key::Shift => IS_SHIFT_PRESSED.lock().unwrap(),
         Key::Control => IS_CTRL_PRESSED.lock().unwrap(),
         Key::Alt => IS_ALT_PRESSED.lock().unwrap(),
@@ -36,13 +35,55 @@ fn toggle_key_press(key: Key, enigo: &mut Enigo) {
         Key::RShift => IS_RSHIFT_PRESSED.lock().unwrap(),
         Key::RControl => IS_RCTRL_PRESSED.lock().unwrap(),
         _ => return,
-    };
-    let kvalue = *kstr;
-    let kstr = !kvalue;
-    if kstr {
+    });
+    if kvalue {
         let _ = enigo.key(key, Direction::Press);
     } else {
         let _ = enigo.key(key, Direction::Release);
+    }
+}
+
+pub fn drag_mouse_abs(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
+    let (mouse_x, mouse_y) = enigo.location().expect("Unable to locate mouse position.");
+
+    let delta_x = pos.0 - mouse_x;
+    let delta_y = pos.1 - mouse_y;
+
+    let delta_sum = (delta_x.pow(2) + delta_y.pow(2)) as f32;
+    let distance = delta_sum.sqrt();
+
+    let step_x = delta_x as f32 / distance;
+    let step_y = delta_y as f32 / distance;
+
+    let mut new_x = mouse_x as f32;
+    let mut new_y = mouse_y as f32;
+    let sleep_duration = Duration::from_micros(speed as u64);
+    for _ in 0..distance as usize {
+        new_x += step_x;
+        new_y += step_y;
+        enigo.move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
+            .unwrap_or_else(|_| panic!("Unable to move mouse position to ({}, {}).", pos.0, pos.1));
+        thread::sleep(sleep_duration);
+    }
+}
+
+pub fn drag_mouse_rel(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
+    let delta_sum = (pos.0.pow(2) + pos.1.pow(2)) as f32;
+    let distance = delta_sum.sqrt();
+
+    let step_x = pos.0 as f32 / distance;
+    let step_y = pos.1 as f32 / distance;
+
+    let (mouse_x, mouse_y) = enigo.location().expect("Unable to locate mouse position.");
+    let mut new_x = mouse_x as f32;
+    let mut new_y = mouse_y as f32;
+    let sleep_duration = Duration::from_micros(speed as u64);
+    for _ in 0..distance as usize {
+        new_x += step_x;
+        new_y += step_y;
+        enigo.move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
+            .unwrap_or_else(|_| panic!("Unable to move mouse position to ({}, {}).", pos.0, pos.1));
+        thread::sleep(sleep_duration);
     }
 }
 
@@ -67,15 +108,15 @@ fn convert_to_human_readable(timestamp: &str) -> String {
 }
 
 fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
-    let lists: Vec<(Vec<(Key, usize)>, usize)> = vec![
-        (ALPHANUMERIC_KEYS.to_vec(), 5),
-        (FUNCTION_KEYS.to_vec(), 3),
-        (SPECIAL_KEYS.to_vec(), 1),
-        (MODIFIER_KEYS.to_vec(), 2),
+    let lists: Vec<(&'static [(Key, usize)], usize)> = vec![
+        (ALPHANUMERIC_KEYS, 5),
+        (FUNCTION_KEYS, 3),
+        (SPECIAL_KEYS, 1),
+        (MODIFIER_KEYS, 2),
     ];
     let index: WeightedIndex<usize> =
-        WeightedIndex::new(lists.iter().map(|item: &(Vec<(Key, usize)>, usize)| item.1)).unwrap();
-    let list: &Vec<(Key, usize)> = &lists[index.sample(rng)].0;
+        WeightedIndex::new(lists.iter().map(|item: &(&[(Key, usize)], usize)| item.1)).unwrap();
+    let list: &[(Key, usize)] = lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> =
         WeightedIndex::new(list.iter().map(|item: &(Key, usize)| item.1)).unwrap();
     if list.contains(&(Key::Shift, 1)) {
@@ -105,72 +146,68 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
         let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
-        mouse::down(typeclick);
+        if get_config().extra.do_debugging { tracing::info!("mouse: holding button {:?}", typeclick) }
+        let _ = enigo.button(typeclick, Direction::Press);
         thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
-        mouse::up(typeclick);
+        let _ = enigo.button(typeclick, Direction::Release);
     } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
         let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
-        mouse::click(typeclick);
+        if get_config().extra.do_debugging { tracing::info!("mouse: clicking button {:?}", typeclick) }
+        let _ = enigo.button(typeclick, Direction::Click);
     } else {
         match click {
-            "mouse_move_abs" => mouse::move_to(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0)
-                    .try_into()
-                    .unwrap(),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
-                    .try_into()
-                    .unwrap(),
+            "mouse_move_abs" => enigo.move_mouse(
+                rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1),
+                    Coordinate::Abs
+            ).unwrap(),
+            "mouse_move_rel" => enigo.move_mouse(
+                rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1),
+                Coordinate::Rel
+            ).unwrap(),
+            "mouse_drag_abs_std" => drag_mouse_abs(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(SPEED_WEIGHTED_LISTS_NORMAL.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0
             ),
-            "mouse_move_rel" => mouse::move_rel(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
+            "mouse_drag_rel_std" => drag_mouse_rel(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(SPEED_WEIGHTED_LISTS_NORMAL.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0
             ),
-            "mouse_drag_abs_std" => mouse::drag_to(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0)
-                    .try_into()
-                    .unwrap(),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
-                    .try_into()
-                    .unwrap(),
+            "mouse_drag_abs_fst" => drag_mouse_abs(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(SPEED_WEIGHTED_LISTS_FAST.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
             ),
-            "mouse_drag_rel_std" => mouse::drag_rel(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
+            "mouse_drag_rel_fst" => drag_mouse_rel(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(SPEED_WEIGHTED_LISTS_FAST.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
             ),
-            "mouse_drag_abs_fst" => mouse::slow_drag_to(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0)
-                    .try_into()
-                    .unwrap(),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
-                    .try_into()
-                    .unwrap(),
-                Speed::Fast,
+            "mouse_drag_abs_slw" => drag_mouse_abs(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(SPEED_WEIGHTED_LISTS_SLOW.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
             ),
-            "mouse_drag_rel_fst" => mouse::slow_drag_rel(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
-                Speed::Fast,
+            "mouse_drag_rel_slw" => drag_mouse_rel(
+                enigo,
+                (rng.gen_range(0..=enigo.main_display().unwrap().0),
+                rng.gen_range(0..=enigo.main_display().unwrap().1)),
+                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(SPEED_WEIGHTED_LISTS_SLOW.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
             ),
-            "mouse_drag_abs_slw" => mouse::slow_drag_to(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0)
-                    .try_into()
-                    .unwrap(),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1)
-                    .try_into()
-                    .unwrap(),
-                Speed::Slow,
-            ),
-            "mouse_drag_rel_slw" => mouse::slow_drag_rel(
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().0),
-                rng.gen_range(0..=Mouse::main_display(enigo).unwrap().1),
-                Speed::Slow,
-            ),
-            "mouse_scroll_x" => mouse::scroll(ScrollAxis::X, rng.gen_range(1..=200)),
-            "mouse_scroll_y" => mouse::scroll(ScrollAxis::Y, rng.gen_range(1..=175)),
+            "mouse_scroll_x" => enigo.scroll(rng.gen_range(1..=200), Axis::Horizontal).unwrap(),
+            "mouse_scroll_y" => enigo.scroll(rng.gen_range(1..=175), Axis::Vertical).unwrap(),
             "mouse_scroll_xy" => {
-                mouse::scroll(ScrollAxis::X, rng.gen_range(0..=200));
-                mouse::scroll(ScrollAxis::Y, rng.gen_range(0..=175));
+                enigo.scroll(rng.gen_range(0..=200), Axis::Horizontal).unwrap();
+                enigo.scroll(rng.gen_range(0..=175), Axis::Vertical).unwrap();
             }
             _ => {}
         }
@@ -184,17 +221,19 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
         (QUOTES_QUESTION.to_vec(), 1),
         (QUOTES_STATEMENT.to_vec(), 2),
     ];
+    if get_config().extra.do_debugging { tracing::info!("quote: choosing random sentence") }
     let index: WeightedIndex<usize> = WeightedIndex::new(lists.iter().map(|item| item.1)).unwrap();
     let list: &Vec<(&str, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> = WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
     let quote: &str = list[index2.sample(rng)].0;
-    println!("{}", quote);
+    println!("{quote}");
     let _ = tts.speak(quote, true);
 }
 
 fn quote_gen(tts: &mut Tts) {
+    if get_config().extra.do_debugging { tracing::info!("quote_gen: generating sentence") }
     let quote: &str = &gen_sentence(SentenceConfigBuilder::random().build());
-    println!("{}", quote);
+    println!("{quote}");
     let _ = tts.speak(quote, true);
 }
 
@@ -209,13 +248,14 @@ async fn quote_gen_ext(tts: &mut Tts) {
     )
     .is_ok()
     {
+        if get_config().extra.do_debugging { tracing::info!("quote_gen_ext: internet check passed, sending request to sentence api") }
         let quote: &str = &reqwest::get("http://metaphorpsum.com/sentences/1/")
             .await
             .expect("could not get external sentence api")
             .text()
             .await
             .unwrap();
-        println!("{}", quote);
+        println!("{quote}");
         let _ = tts.speak(quote, true);
     }
 }
@@ -227,10 +267,10 @@ fn screenshot(tts: &mut Tts) {
 
     for screen in screens {
         let time: String = convert_to_human_readable(Local::now().to_string().as_str());
-        let _ = File::create(format!("screenshots/{}.png", time));
+        let _ = File::create(format!("screenshots/{time}.png"));
         let image: screenshots::image::ImageBuffer<screenshots::image::Rgba<u8>, Vec<u8>> =
             screen.capture().unwrap();
-        image.save(format!("screenshots/{}.png", time)).unwrap();
+        image.save(format!("screenshots/{time}.png")).unwrap();
     }
 }
 
@@ -253,6 +293,7 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
 }
 
 #[cfg(feature = "advanced")]
+#[cfg(target_os = "windows")]
 fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (GAMEPAD_BUTTONS.to_vec(), 5),
@@ -271,30 +312,53 @@ fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     let action = list[index2.sample(rng)].0;
     match action {
         "LeftThumbstickMove" => {
-            gamepad.update_left_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+            let range = (rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0));
+            gamepad.update_left_thumbstick(range);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("gamepad: holding left thumbstick at position {:?}", range)
+            }
             gamepad.inject();
             thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
             gamepad.update_left_thumbstick((0.0, 0.0));
         }
         "RightThumbstickMove" => {
-            gamepad.update_right_thumbstick((rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0)));
+            let range = (rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0));
+            gamepad.update_right_thumbstick(range);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("gamepad: holding right thumbstick at position {:?}", range)
+            }
             gamepad.inject();
             thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
             gamepad.update_right_thumbstick((0.0, 0.0));
         }
         "LeftTrigger" => {
-            gamepad.update_left_trigger(rng.gen_range(0.0..=1.0));
+            let placement = rng.gen_range(0.0..=1.0);
+            gamepad.update_left_trigger(placement);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("gamepad: holding left trigger at position {}", placement)
+            }
             gamepad.inject();
             thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
             gamepad.update_left_trigger(0.0);
         }
         "RightTrigger" => {
-            gamepad.update_right_trigger(rng.gen_range(0.0..=1.0));
+            let placement = rng.gen_range(0.0..=1.0);
+            gamepad.update_right_trigger(placement);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("gamepad: holding right trigger at position {}", placement)
+            }
             gamepad.inject();
             thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
             gamepad.update_right_trigger(0.0);
         }
         _ => {
+            if get_config().extra.do_debugging {
+                tracing::info!("gamepad: toggling button {}", action)
+            }
             gamepad.toggle_button(action);
         }
     }
@@ -302,6 +366,7 @@ fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
 }
 
 #[cfg(feature = "advanced")]
+#[cfg(target_os = "windows")]
 fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (PEN_BUTTONS.to_vec(), 3),
@@ -320,28 +385,52 @@ fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
     let action = list[index2.sample(rng)].0;
     match action {
         "Pressure" => {
-            pen.update_pressure(rng.gen_range(0.0..=1024.0));
+            let placement = rng.gen_range(0.0..=1024.0);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating pressure to {}", placement)
+            }
+            pen.update_pressure(placement);
         }
         "Rotation" => {
-            pen.update_rotation(rng.gen_range(0.0..=359.0));
+            let placement = rng.gen_range(0.0..=359.0);
+
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating rotation to {}", placement)
+            }
+            pen.update_rotation(placement);
         }
         "Tilt" => {
-            pen.update_tilt((rng.gen_range(-90..=90), rng.gen_range(-90..=90)));
+            let placement = (rng.gen_range(-90..=90), rng.gen_range(-90..=90));
+
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating tilt to {:?}", placement)
+            }
+            pen.update_tilt(placement);
         }
         "XY_Move" => {
             let display = Screen::from_point(0, 0).unwrap().display_info;
-            pen.update_position((
+            let placement = (
                 rng.gen_range(0..=display.width).try_into().unwrap(),
                 rng.gen_range(0..=display.height).try_into().unwrap(),
-            ));
+            );
+
+            if get_config().extra.do_debugging { tracing::info!("pen: updating x and y position to {:?}", placement) }
+            pen.update_position(placement);
         }
         "X_Move" => {
             let display = Screen::from_point(0, 0).unwrap().display_info;
-            pen.update_position((rng.gen_range(0..=display.width).try_into().unwrap(), -1));
+            let placement = rng.gen_range(0..=display.width).try_into().unwrap();
+
+            if get_config().extra.do_debugging { tracing::info!("pen: updating x position to {}", placement) }
+            pen.update_position((placement, -1));
         }
         "Y_Move" => {
             let display = Screen::from_point(0, 0).unwrap().display_info;
-            pen.update_position((-1, rng.gen_range(0..=display.height).try_into().unwrap()));
+            let placement = rng.gen_range(0..=display.height).try_into().unwrap();
+
+            if get_config().extra.do_debugging { tracing::info!("pen: updating y position to {}", placement) }
+            pen.update_position((-1, placement));
         }
         _ => {
             pen.toggle_button(action);
@@ -364,7 +453,9 @@ pub async fn main_logic_adv(
         WeightedIndex::new(options.iter().map(|item| item.1)).unwrap();
     match options[index.sample(&mut rng)].0 {
         "keyboard" => keyboard(enigo, &mut rng),
+        #[cfg(target_os = "windows")]
         "gamepad" => gamepad(gamepadobj, &mut rng),
+        #[cfg(target_os = "windows")]
         "pen" => pen(penobj, &mut rng),
         "mouse" => mouse(enigo, &mut rng),
         "quote" => quote(tts, &mut rng),

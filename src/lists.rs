@@ -1,43 +1,43 @@
 use enigo::{Key, Key::Unicode};
 
 /* Keyboard lists */
-pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
-    (Key::A, 4),
-    (Key::B, 4),
-    (Key::C, 4),
-    (Key::D, 4),
-    (Key::E, 4),
-    (Key::F, 4),
-    (Key::G, 4),
-    (Key::H, 4),
-    (Key::I, 4),
-    (Key::J, 4),
-    (Key::K, 4),
-    (Key::L, 4),
-    (Key::M, 4),
-    (Key::N, 8),
-    (Key::O, 4),
-    (Key::P, 4),
-    (Key::Q, 4),
-    (Key::R, 4),
-    (Key::S, 4),
-    (Key::T, 4),
-    (Key::U, 4),
-    (Key::V, 4),
-    (Key::W, 4),
-    (Key::X, 4),
-    (Key::Y, 4),
-    (Key::Z, 4),
-    (Key::Num0, 2),
-    (Key::Num1, 2),
-    (Key::Num2, 2),
-    (Key::Num3, 2),
-    (Key::Num4, 2),
-    (Key::Num5, 2),
-    (Key::Num6, 2),
-    (Key::Num7, 2),
-    (Key::Num8, 2),
-    (Key::Num9, 2),
+pub static ALPHANUMERIC_KEYS: &[(Key, usize)] = &[
+    (Unicode('A'), 4),
+    (Unicode('B'), 4),
+    (Unicode('C'), 4),
+    (Unicode('D'), 4),
+    (Unicode('E'), 4),
+    (Unicode('F'), 4),
+    (Unicode('G'), 4),
+    (Unicode('H'), 4),
+    (Unicode('I'), 4),
+    (Unicode('J'), 4),
+    (Unicode('K'), 4),
+    (Unicode('L'), 4),
+    (Unicode('M'), 4),
+    (Unicode('N'), 8),
+    (Unicode('O'), 4),
+    (Unicode('P'), 4),
+    (Unicode('Q'), 4),
+    (Unicode('R'), 4),
+    (Unicode('S'), 4),
+    (Unicode('T'), 4),
+    (Unicode('U'), 4),
+    (Unicode('V'), 4),
+    (Unicode('W'), 4),
+    (Unicode('X'), 4),
+    (Unicode('Y'), 4),
+    (Unicode('Z'), 4),
+    (Unicode('0'), 2),
+    (Unicode('1'), 2),
+    (Unicode('2'), 2),
+    (Unicode('3'), 2),
+    (Unicode('4'), 2),
+    (Unicode('5'), 2),
+    (Unicode('6'), 2),
+    (Unicode('7'), 2),
+    (Unicode('8'), 2),
+    (Unicode('9'), 2),
     (Unicode('`'), 1),
     (Unicode('-'), 1),
     (Unicode('='), 1),
@@ -51,7 +51,7 @@ pub static ALPHANUMERIC_KEYS: [(Key, usize); 47] = [
     (Unicode('/'), 1),
 ];
 
-pub static FUNCTION_KEYS: [(Key, usize); 24] = [
+pub static FUNCTION_KEYS: &[(Key, usize)] = &[
     (Key::F1, 1),
     (Key::F2, 1),
     (Key::F3, 1),
@@ -72,13 +72,39 @@ pub static FUNCTION_KEYS: [(Key, usize); 24] = [
     (Key::F18, 1),
     (Key::F19, 1),
     (Key::F20, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::F21, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::F22, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::F23, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::F24, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F25, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F26, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F27, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F28, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F29, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F30, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F31, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F32, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F33, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F34, 1),
+    #[cfg(all(unix, not(target_os = "macos")))]
+    (Key::F35, 1),
 ];
 
-pub static MODIFIER_KEYS: [(Key, usize); 7] = [
+pub static MODIFIER_KEYS: &[(Key, usize)] = &[
     (Key::Control, 1),
     (Key::LControl, 1),
     (Key::RControl, 1),
@@ -88,7 +114,7 @@ pub static MODIFIER_KEYS: [(Key, usize); 7] = [
     (Key::RShift, 1),
 ];
 
-pub static SPECIAL_KEYS: [(Key, usize); 36] = [
+pub static SPECIAL_KEYS: &[(Key, usize)] = &[
     (Key::Backspace, 1),
     (Key::Meta, 1),
     (Key::Clear, 1),
@@ -109,21 +135,37 @@ pub static SPECIAL_KEYS: [(Key, usize); 36] = [
     (Key::DownArrow, 1),
     (Key::LeftArrow, 1),
     (Key::RightArrow, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numlock, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad0, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad1, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad2, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad3, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad4, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad5, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad6, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad7, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad8, 1),
+    #[cfg(target_os = "windows")]
     (Key::Numpad9, 1),
-    (Key::Add, 1),
+    #[cfg(target_os = "windows")]
     (Key::Decimal, 1),
+    #[cfg(target_os = "windows")]
+    (Key::Add, 1),
+    #[cfg(target_os = "windows")]
     (Key::Divide, 1),
+    #[cfg(target_os = "windows")]
     (Key::Multiply, 1),
+    #[cfg(target_os = "windows")]
     (Key::Subtract, 1),
 ];
 

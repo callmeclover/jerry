@@ -1,17 +1,20 @@
+use cached::proc_macro::cached;
 #[allow(unused_imports)]
 use dialoguer::{theme::ColorfulTheme, Confirm};
+use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
-use cached::{proc_macro::cached, SizedCache};
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default, Clone, Eq, Hash, PartialEq)]
+
+#[derive(Debug, Serialize, Deserialize, Default, Clone, Eq, Hash, PartialEq)]
 pub struct Config {
     #[allow(dead_code)] // Disable dead code warning for the entire struct
     basic: Basic,
     #[allow(dead_code)] // Disable dead code warning for the entire struct
-    extra: Extra,
+    pub extra: Extra,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
+#[allow(clippy::struct_excessive_bools)]
 struct Basic {
     #[allow(dead_code)]
     use_mouse: bool,
@@ -29,12 +32,13 @@ struct Basic {
     do_gen_tts: bool,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default, Clone, Hash, PartialEq, Eq)]
-struct Extra {
+#[derive(Debug, Serialize, Deserialize, Default, Clone, Hash, PartialEq, Eq)]
+#[allow(clippy::struct_excessive_bools)]
+pub struct Extra {
     #[allow(dead_code)]
-    do_debugging: bool,
+    pub do_debugging: bool,
     #[allow(dead_code)]
-    enable_debugging_extras: bool,
+    pub enable_debugging_extras: bool,
     #[allow(dead_code)]
     use_external_sentence_api: bool,
     #[allow(dead_code)]
@@ -43,7 +47,7 @@ struct Extra {
 
 impl Default for Basic {
     fn default() -> Self {
-        Basic {
+        Self {
             #[allow(dead_code)]
             use_mouse: true,
             #[allow(dead_code)]
@@ -62,10 +66,7 @@ impl Default for Basic {
     }
 }
 
-#[cached(
-    ty = "SizedCache<String, Config>",
-    create = "{ SizedCache::with_size(1) }",
-)]
+#[cached]
 pub fn get_config() -> Config {
     loop {
         if Path::new("./config.toml").exists() {
@@ -128,7 +129,7 @@ pub fn get_config() -> Config {
     }
 }
 
-pub async fn get_options(config: Config) -> Vec<(&'static str, usize)> {
+pub fn get_options(config: &Config) -> Vec<(&'static str, usize)> {
     let mut options: Vec<(&'static str, usize)> = vec![];
 
     if config.basic.use_mouse {

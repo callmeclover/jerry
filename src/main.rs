@@ -1,22 +1,37 @@
-#![cfg_attr(feature = "invisibility", windows_subsystem = "windows")]
+#![cfg_attr(all(feature = "invisibility", target_os = "windows"), windows_subsystem = "windows")]
+
+// Begin allow clippy warnings
+
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_sign_loss)]
+
+// End allow clippy warnings
 
 mod config;
 mod func;
 mod lists;
-#[cfg(feature = "advanced")]
 mod model;
-use config::*;
-use enigo::*;
+use config::{Config, get_config, get_options};
+use enigo::{Enigo, Settings};
+#[allow(clippy::wildcard_imports)]
 use func::*;
-#[cfg(feature = "advanced")]
-use model::*;
-use std::fs::*;
-use tts::*;
+use model::{SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL, SPEED_WEIGHTED_LISTS_SLOW, Speed};
+use std::fs::{create_dir, metadata};
+use tts::Tts;
 
 #[tokio::main]
 async fn main() {
-    let config: Config = get_config().await;
-    let options: Vec<(&str, usize)> = get_options(config).await;
+    #[cfg(all(target_os = "unix", feature = "invisibility"))]
+    {
+        let daemonize = daemonize::Daemonize::new();
+        match daemonize.start() {
+            Ok(_) => println!("Success, daemonized"),
+            Err(e) => eprintln!("Error, {}", e),
+        }
+    }
+    let config: Config = get_config();
+    let options: Vec<(&str, usize)> = get_options(&config);
 
     println!("\nStarting Jerry...");
     println!("Jerry has been started!\n");
@@ -27,13 +42,13 @@ async fn main() {
     let mut tts: Tts = match Tts::default() {
         Ok(tts) => tts,
         Err(err) => {
-            panic!("Failed to create tts instance: {:?}", err);
+            panic!("Failed to create tts instance: {err:?}");
         }
     };
 
     let mut enigo: Enigo = Enigo::new(&Settings::default()).unwrap();
 
-    #[cfg(feature = "advanced")]
+    #[cfg(all(feature = "advanced", target_os = "windows"))]
     {
         let mut gamepad = GamepadInjector::new();
         let mut pen = PenInjector::new();

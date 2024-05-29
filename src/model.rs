@@ -1,15 +1,20 @@
+#[cfg(target_os = "windows")]
 use std::collections::HashMap;
+#[cfg(target_os = "windows")]
 use windows::Gaming::Input::GamepadButtons;
+#[cfg(target_os = "windows")]
 use windows::UI::Input::Preview::Injection::{
     InjectedInputGamepadInfo, InjectedInputPenButtons, InjectedInputPenInfo, InputInjector,
 };
 
+#[cfg(target_os = "windows")]
 pub struct GamepadInjector {
     gamepad_state: InjectedInputGamepadInfo,
     injector: InputInjector,
     abs_buttons: HashMap<String, bool>,
 }
 
+#[cfg(target_os = "windows")]
 impl GamepadInjector {
     pub fn new() -> Self {
         let abs_buttons: HashMap<String, bool> = HashMap::from([
@@ -115,18 +120,21 @@ impl GamepadInjector {
     }
 }
 
+#[cfg(target_os = "windows")]
 impl Drop for GamepadInjector {
     fn drop(&mut self) {
         self.injector.UninitializeGamepadInjection().unwrap();
     }
 }
 
+#[cfg(target_os = "windows")]
 pub struct PenInjector {
     pen_state: InjectedInputPenInfo,
     injector: InputInjector,
     abs_buttons: HashMap<String, bool>,
 }
 
+#[cfg(target_os = "windows")]
 impl PenInjector {
     pub fn new() -> Self {
         let abs_buttons: HashMap<String, bool> = HashMap::from([
@@ -206,8 +214,24 @@ impl PenInjector {
     }
 }
 
+#[cfg(target_os = "windows")]
 impl Drop for PenInjector {
     fn drop(&mut self) {
         self.injector.UninitializePenInjection().unwrap();
     }
 }
+
+#[derive(Clone, Copy)]
+pub enum Speed {
+    Fastest = 100,
+    Faster = 250,
+    Fast = 500,
+    Normal = 1000,
+    Slow = 1500,
+    Slower = 2000,
+    Slowest = 3000,
+}
+
+pub static SPEED_WEIGHTED_LISTS_SLOW: &[(Speed, usize)] = &[(Speed::Slow, 6), (Speed::Slower, 3), (Speed::Slowest, 1)];
+pub static SPEED_WEIGHTED_LISTS_FAST: &[(Speed, usize)] = &[(Speed::Fast, 6), (Speed::Faster, 3), (Speed::Fastest, 1)];
+pub static SPEED_WEIGHTED_LISTS_NORMAL: &[(Speed, usize)] = &[(Speed::Normal, 1)];
