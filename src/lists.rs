@@ -117,24 +117,27 @@ pub static MODIFIER_KEYS: &[(Key, usize)] = &[
 pub static SPECIAL_KEYS: &[(Key, usize)] = &[
     (Key::Backspace, 1),
     (Key::Meta, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::Clear, 1),
     (Key::Delete, 1),
     (Key::End, 1),
     (Key::CapsLock, 1),
     (Key::Escape, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::Execute, 1),
     (Key::Help, 1),
     (Key::Home, 1),
+    #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
     (Key::Insert, 1),
     (Key::PageDown, 1),
     (Key::PageUp, 1),
     (Key::Return, 1),
     (Key::Space, 1),
     (Key::Tab, 1),
-    (Key::UpArrow, 1),
-    (Key::DownArrow, 1),
-    (Key::LeftArrow, 1),
-    (Key::RightArrow, 1),
+    (Key::UpArrow, 2),
+    (Key::DownArrow, 2),
+    (Key::LeftArrow, 2),
+    (Key::RightArrow, 2),
     #[cfg(target_os = "windows")]
     (Key::Numlock, 1),
     #[cfg(target_os = "windows")]
