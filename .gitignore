@@ -1,5 +1,8 @@
-/target
-/build
-/screenshots
 /.vscode
+
+# cargo files
+/target
+
+# jerry's files
 config.toml
+/screenshots

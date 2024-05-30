@@ -1,5 +1,6 @@
-use crate::{get_config, lists::{ALPHANUMERIC_KEYS, FUNCTION_KEYS, MODIFIER_KEYS, MOUSE_CLICKS, MOUSE_MOVE, MOUSE_SCROLL, QUOTES_NEGATIVE, QUOTES_POSITIVE, QUOTES_QUESTION, QUOTES_STATEMENT, SPECIAL_KEYS}, Speed, SPEED_WEIGHTED_LISTS_SLOW, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL};
-#[cfg(feature = "advanced")]
+#[allow(clippy::wildcard_imports)]
+use crate::{get_config, lists::*, Speed, SPEED_WEIGHTED_LISTS_SLOW, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL};
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 use crate::{GamepadInjector, PenInjector};
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 use chrono::{prelude::*, DateTime};

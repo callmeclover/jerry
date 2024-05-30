@@ -170,7 +170,7 @@ pub static SPECIAL_KEYS: &[(Key, usize)] = &[
 ];
 
 /* Mouse action lists */
-pub static MOUSE_CLICKS: [(&str, usize); 6] = [
+pub static MOUSE_CLICKS: &[(&str, usize)] = &[
     ("mouse_down_left", 1),
     ("mouse_down_right", 1),
     ("mouse_down_middle", 1),
@@ -179,7 +179,7 @@ pub static MOUSE_CLICKS: [(&str, usize); 6] = [
     ("mouse_click_middle", 5),
 ];
 
-pub static MOUSE_MOVE: [(&str, usize); 8] = [
+pub static MOUSE_MOVE: &[(&str, usize)] = &[
     ("mouse_move_abs", 1),
     ("mouse_move_rel", 1),
     ("mouse_drag_abs_std", 5),
@@ -190,14 +190,14 @@ pub static MOUSE_MOVE: [(&str, usize); 8] = [
     ("mouse_drag_rel_slw", 3),
 ];
 
-pub static MOUSE_SCROLL: [(&str, usize); 3] = [
+pub static MOUSE_SCROLL: &[(&str, usize)] = &[
     ("mouse_scroll_x", 2),
     ("mouse_scroll_y", 2),
     ("mouse_scroll_xy", 1),
 ];
 
 /* Quotes */
-pub static QUOTES_NEGATIVE: [(&str, usize); 11] = [
+pub static QUOTES_NEGATIVE: &[(&str, usize)] = &[
     ("i don't like you", 1),
     ("you have no friends", 1),
     ("loser", 1),
@@ -211,7 +211,7 @@ pub static QUOTES_NEGATIVE: [(&str, usize); 11] = [
     ("are you caseoh junior, mr. fatass?", 1),
 ];
 
-pub static QUOTES_POSITIVE: [(&str, usize); 5] = [
+pub static QUOTES_POSITIVE: &[(&str, usize)] = &[
     ("nice computer you have here", 1),
     ("you seem cool", 1),
     ("wowza", 1),
@@ -219,7 +219,7 @@ pub static QUOTES_POSITIVE: [(&str, usize); 5] = [
     ("nice wifi", 1),
 ];
 
-pub static QUOTES_QUESTION: [(&str, usize); 7] = [
+pub static QUOTES_QUESTION: &[(&str, usize)] = &[
     ("what graphics card is this?", 1),
     ("what games you got?", 1),
     ("where's your father, huh?", 1),
@@ -229,7 +229,7 @@ pub static QUOTES_QUESTION: [(&str, usize); 7] = [
     ("did you know that in terms of male human and female pokémon breeding, vaporeon is the most compatible Pokémon for humans?", 1)
 ];
 
-pub static QUOTES_STATEMENT: [(&str, usize); 9] = [
+pub static QUOTES_STATEMENT: &[(&str, usize)] = &[
     ("i'm bored", 1),
     ("i am chaos", 1),
     ("what a mess", 1),
@@ -243,7 +243,7 @@ pub static QUOTES_STATEMENT: [(&str, usize); 9] = [
 
 /* Gamepad action lists */
 #[allow(dead_code)]
-pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
+pub static GAMEPAD_BUTTONS: &[(&str, usize)] = &[
     ("A", 3),
     ("B", 3),
     ("X", 3),
@@ -259,11 +259,10 @@ pub static GAMEPAD_BUTTONS: [(&str, usize); 12] = [
 ];
 
 #[allow(dead_code)]
-pub static GAMEPAD_MOVE: [(&str, usize); 2] =
-    [("LeftThumbstickMove", 3), ("RightThumbstickMove", 1)];
+pub static GAMEPAD_MOVE: &[(&str, usize)] = &[("LeftThumbstickMove", 3), ("RightThumbstickMove", 1)];
 
 #[allow(dead_code)]
-pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
+pub static GAMEPAD_SPECIAL: &[(&str, usize)] = &[
     ("LeftThumbstick", 1),
     ("Menu", 1),
     ("RightThumbstick", 1),
@@ -272,10 +271,10 @@ pub static GAMEPAD_SPECIAL: [(&str, usize); 4] = [
 
 /* Pen action lists */
 #[allow(dead_code)]
-pub static PEN_BUTTONS: [(&str, usize); 3] = [("Barrel", 1), ("Eraser", 1), ("Inverted", 1)];
+pub static PEN_BUTTONS: &[(&str, usize)] = &[("Barrel", 1), ("Eraser", 1), ("Inverted", 1)];
 
 #[allow(dead_code)]
-pub static PEN_MOVE: [(&str, usize); 3] = [("XY_Move", 2), ("X_Move", 1), ("Y_Move", 1)];
+pub static PEN_MOVE: &[(&str, usize)] = &[("XY_Move", 2), ("X_Move", 1), ("Y_Move", 1)];
 
 #[allow(dead_code)]
-pub static PEN_SPECIAL: [(&str, usize); 3] = [("Pressure", 1), ("Tilt", 1), ("Rotation", 1)];
+pub static PEN_SPECIAL: &[(&str, usize)] = &[("Pressure", 1), ("Tilt", 1), ("Rotation", 1)];

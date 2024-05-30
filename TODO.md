@@ -1,0 +1,8 @@
+- [ ] testing
+  - [x] windows tests
+  - [ ] linux tests
+  - [ ] macos tests
+- [ ] platform parity
+  - [x] windows
+  - [ ] linux
+  - [ ] macos

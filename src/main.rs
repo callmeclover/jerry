@@ -16,7 +16,8 @@ use config::{Config, get_config, get_options};
 use enigo::{Enigo, Settings};
 #[allow(clippy::wildcard_imports)]
 use func::*;
-use model::{SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL, SPEED_WEIGHTED_LISTS_SLOW, Speed};
+#[allow(clippy::wildcard_imports)]
+use model::*;
 use std::fs::{create_dir, metadata};
 use tts::Tts;
 

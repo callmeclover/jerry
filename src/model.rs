@@ -1,20 +1,20 @@
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 use std::collections::HashMap;
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 use windows::Gaming::Input::GamepadButtons;
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 use windows::UI::Input::Preview::Injection::{
     InjectedInputGamepadInfo, InjectedInputPenButtons, InjectedInputPenInfo, InputInjector,
 };
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 pub struct GamepadInjector {
     gamepad_state: InjectedInputGamepadInfo,
     injector: InputInjector,
     abs_buttons: HashMap<String, bool>,
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 impl GamepadInjector {
     pub fn new() -> Self {
         let abs_buttons: HashMap<String, bool> = HashMap::from([
@@ -120,21 +120,21 @@ impl GamepadInjector {
     }
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 impl Drop for GamepadInjector {
     fn drop(&mut self) {
         self.injector.UninitializeGamepadInjection().unwrap();
     }
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 pub struct PenInjector {
     pen_state: InjectedInputPenInfo,
     injector: InputInjector,
     abs_buttons: HashMap<String, bool>,
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 impl PenInjector {
     pub fn new() -> Self {
         let abs_buttons: HashMap<String, bool> = HashMap::from([
@@ -214,7 +214,7 @@ impl PenInjector {
     }
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
 impl Drop for PenInjector {
     fn drop(&mut self) {
         self.injector.UninitializePenInjection().unwrap();
