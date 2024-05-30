@@ -1,5 +1,8 @@
 #[allow(clippy::wildcard_imports)]
-use crate::{get_config, lists::*, Speed, SPEED_WEIGHTED_LISTS_SLOW, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL};
+use crate::{
+    get_config, lists::*, Speed, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL,
+    SPEED_WEIGHTED_LISTS_SLOW,
+};
 #[cfg(all(feature = "advanced", target_os = "windows"))]
 use crate::{GamepadInjector, PenInjector};
 use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
@@ -62,7 +65,8 @@ pub fn drag_mouse_abs(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     for _ in 0..distance as usize {
         new_x += step_x;
         new_y += step_y;
-        enigo.move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
+        enigo
+            .move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
             .unwrap_or_else(|_| panic!("Unable to move mouse position to ({}, {}).", pos.0, pos.1));
         thread::sleep(sleep_duration);
     }
@@ -82,7 +86,8 @@ pub fn drag_mouse_rel(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     for _ in 0..distance as usize {
         new_x += step_x;
         new_y += step_y;
-        enigo.move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
+        enigo
+            .move_mouse(new_x as i32, new_y as i32, Coordinate::Abs)
             .unwrap_or_else(|_| panic!("Unable to move mouse position to ({}, {}).", pos.0, pos.1));
         thread::sleep(sleep_duration);
     }
@@ -147,68 +152,138 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     if Regex::new(r"mouse_down_.+").unwrap().is_match(click) {
         let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
-        if get_config().extra.do_debugging { tracing::info!("mouse: holding button {:?}", typeclick) }
+        if get_config().extra.do_debugging {
+            tracing::info!("mouse: holding button {:?}", typeclick)
+        }
         let _ = enigo.button(typeclick, Direction::Press);
         thread::sleep(Duration::from_millis(rng.gen_range(0..=5000)));
         let _ = enigo.button(typeclick, Direction::Release);
     } else if Regex::new(r"mouse_click_.+").unwrap().is_match(click) {
         let typeclick: Button = convert_mouse_action(click.split('_').collect::<Vec<_>>()[2])
             .expect("cant convert mouse action");
-        if get_config().extra.do_debugging { tracing::info!("mouse: clicking button {:?}", typeclick) }
+        if get_config().extra.do_debugging {
+            tracing::info!("mouse: clicking button {:?}", typeclick)
+        }
         let _ = enigo.button(typeclick, Direction::Click);
     } else {
         match click {
-            "mouse_move_abs" => enigo.move_mouse(
-                rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1),
-                    Coordinate::Abs
-            ).unwrap(),
-            "mouse_move_rel" => enigo.move_mouse(
-                rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1),
-                Coordinate::Rel
-            ).unwrap(),
+            "mouse_move_abs" => enigo
+                .move_mouse(
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                    Coordinate::Abs,
+                )
+                .unwrap(),
+            "mouse_move_rel" => enigo
+                .move_mouse(
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                    Coordinate::Rel,
+                )
+                .unwrap(),
             "mouse_drag_abs_std" => drag_mouse_abs(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(SPEED_WEIGHTED_LISTS_NORMAL.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_NORMAL
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
             "mouse_drag_rel_std" => drag_mouse_rel(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(SPEED_WEIGHTED_LISTS_NORMAL.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_NORMAL[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_NORMAL
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
             "mouse_drag_abs_fst" => drag_mouse_abs(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(SPEED_WEIGHTED_LISTS_FAST.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_FAST
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
             "mouse_drag_rel_fst" => drag_mouse_rel(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(SPEED_WEIGHTED_LISTS_FAST.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_FAST[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_FAST
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
             "mouse_drag_abs_slw" => drag_mouse_abs(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(SPEED_WEIGHTED_LISTS_SLOW.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_SLOW
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
             "mouse_drag_rel_slw" => drag_mouse_rel(
                 enigo,
-                (rng.gen_range(0..=enigo.main_display().unwrap().0),
-                rng.gen_range(0..=enigo.main_display().unwrap().1)),
-                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(SPEED_WEIGHTED_LISTS_SLOW.iter().map(|item: &(Speed, usize)| item.1)).unwrap().sample(rng)].0,
+                (
+                    rng.gen_range(0..=enigo.main_display().unwrap().0),
+                    rng.gen_range(0..=enigo.main_display().unwrap().1),
+                ),
+                SPEED_WEIGHTED_LISTS_SLOW[WeightedIndex::new(
+                    SPEED_WEIGHTED_LISTS_SLOW
+                        .iter()
+                        .map(|item: &(Speed, usize)| item.1),
+                )
+                .unwrap()
+                .sample(rng)]
+                .0,
             ),
-            "mouse_scroll_x" => enigo.scroll(rng.gen_range(1..=200), Axis::Horizontal).unwrap(),
-            "mouse_scroll_y" => enigo.scroll(rng.gen_range(1..=175), Axis::Vertical).unwrap(),
+            "mouse_scroll_x" => enigo
+                .scroll(rng.gen_range(1..=200), Axis::Horizontal)
+                .unwrap(),
+            "mouse_scroll_y" => enigo
+                .scroll(rng.gen_range(1..=175), Axis::Vertical)
+                .unwrap(),
             "mouse_scroll_xy" => {
-                enigo.scroll(rng.gen_range(0..=200), Axis::Horizontal).unwrap();
-                enigo.scroll(rng.gen_range(0..=175), Axis::Vertical).unwrap();
+                enigo
+                    .scroll(rng.gen_range(0..=200), Axis::Horizontal)
+                    .unwrap();
+                enigo
+                    .scroll(rng.gen_range(0..=175), Axis::Vertical)
+                    .unwrap();
             }
             _ => {}
         }
@@ -222,7 +297,9 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
         (QUOTES_QUESTION.to_vec(), 1),
         (QUOTES_STATEMENT.to_vec(), 2),
     ];
-    if get_config().extra.do_debugging { tracing::info!("quote: choosing random sentence") }
+    if get_config().extra.do_debugging {
+        tracing::info!("quote: choosing random sentence")
+    }
     let index: WeightedIndex<usize> = WeightedIndex::new(lists.iter().map(|item| item.1)).unwrap();
     let list: &Vec<(&str, usize)> = &lists[index.sample(rng)].0;
     let index2: WeightedIndex<usize> = WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
@@ -232,7 +309,9 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
 }
 
 fn quote_gen(tts: &mut Tts) {
-    if get_config().extra.do_debugging { tracing::info!("quote_gen: generating sentence") }
+    if get_config().extra.do_debugging {
+        tracing::info!("quote_gen: generating sentence")
+    }
     let quote: &str = &gen_sentence(SentenceConfigBuilder::random().build());
     println!("{quote}");
     let _ = tts.speak(quote, true);
@@ -249,7 +328,9 @@ async fn quote_gen_ext(tts: &mut Tts) {
     )
     .is_ok()
     {
-        if get_config().extra.do_debugging { tracing::info!("quote_gen_ext: internet check passed, sending request to sentence api") }
+        if get_config().extra.do_debugging {
+            tracing::info!("quote_gen_ext: internet check passed, sending request to sentence api")
+        }
         let quote: &str = &reqwest::get("http://metaphorpsum.com/sentences/1/")
             .await
             .expect("could not get external sentence api")
@@ -416,21 +497,27 @@ fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
                 rng.gen_range(0..=display.height).try_into().unwrap(),
             );
 
-            if get_config().extra.do_debugging { tracing::info!("pen: updating x and y position to {:?}", placement) }
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating x and y position to {:?}", placement)
+            }
             pen.update_position(placement);
         }
         "X_Move" => {
             let display = Screen::from_point(0, 0).unwrap().display_info;
             let placement = rng.gen_range(0..=display.width).try_into().unwrap();
 
-            if get_config().extra.do_debugging { tracing::info!("pen: updating x position to {}", placement) }
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating x position to {}", placement)
+            }
             pen.update_position((placement, -1));
         }
         "Y_Move" => {
             let display = Screen::from_point(0, 0).unwrap().display_info;
             let placement = rng.gen_range(0..=display.height).try_into().unwrap();
 
-            if get_config().extra.do_debugging { tracing::info!("pen: updating y position to {}", placement) }
+            if get_config().extra.do_debugging {
+                tracing::info!("pen: updating y position to {}", placement)
+            }
             pen.update_position((-1, placement));
         }
         _ => {
