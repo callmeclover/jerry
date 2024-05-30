@@ -1,7 +1,8 @@
-#![cfg_attr(all(feature = "invisibility", target_os = "windows"), windows_subsystem = "windows")]
-
+#![cfg_attr(
+    all(feature = "invisibility", target_os = "windows"),
+    windows_subsystem = "windows"
+)]
 // Begin allow clippy warnings
-
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_precision_loss)]
 #![allow(clippy::cast_sign_loss)]
@@ -12,7 +13,7 @@ mod config;
 mod func;
 mod lists;
 mod model;
-use config::{Config, get_config, get_options};
+use config::{get_config, get_options, Config};
 use enigo::{Enigo, Settings};
 #[allow(clippy::wildcard_imports)]
 use func::*;

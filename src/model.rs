@@ -232,6 +232,8 @@ pub enum Speed {
     Slowest = 3000,
 }
 
-pub static SPEED_WEIGHTED_LISTS_SLOW: &[(Speed, usize)] = &[(Speed::Slow, 6), (Speed::Slower, 3), (Speed::Slowest, 1)];
-pub static SPEED_WEIGHTED_LISTS_FAST: &[(Speed, usize)] = &[(Speed::Fast, 6), (Speed::Faster, 3), (Speed::Fastest, 1)];
+pub static SPEED_WEIGHTED_LISTS_SLOW: &[(Speed, usize)] =
+    &[(Speed::Slow, 6), (Speed::Slower, 3), (Speed::Slowest, 1)];
+pub static SPEED_WEIGHTED_LISTS_FAST: &[(Speed, usize)] =
+    &[(Speed::Fast, 6), (Speed::Faster, 3), (Speed::Fastest, 1)];
 pub static SPEED_WEIGHTED_LISTS_NORMAL: &[(Speed, usize)] = &[(Speed::Normal, 1)];

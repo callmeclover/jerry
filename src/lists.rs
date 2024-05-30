@@ -262,7 +262,8 @@ pub static GAMEPAD_BUTTONS: &[(&str, usize)] = &[
 ];
 
 #[allow(dead_code)]
-pub static GAMEPAD_MOVE: &[(&str, usize)] = &[("LeftThumbstickMove", 3), ("RightThumbstickMove", 1)];
+pub static GAMEPAD_MOVE: &[(&str, usize)] =
+    &[("LeftThumbstickMove", 3), ("RightThumbstickMove", 1)];
 
 #[allow(dead_code)]
 pub static GAMEPAD_SPECIAL: &[(&str, usize)] = &[
