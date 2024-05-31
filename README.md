@@ -39,8 +39,8 @@ when you fork this project, or a fork of this project, you take all responsibili
 
 ## developing
 
-if you're on windows you can already build jerry to boot (`cargo build`). if you are on linux, mac, or pretty much anything other than windows, you can't really run it (probably, no testing has been done) because jerry depends on the `windows` crate. you can, however, use [cross](https://github.com/cross-rs/cross) for cross-compilation.
+jerry runs natively on windows, macos, and linux, though currently only windows supports the `advanced` feature.
 
-multi-platform support will be added in a future update, but this will require a rewrite of some features, including `invisibility` and `advanced`.
+you can make a pull request if you have an implementation of anything, or make an issue if you have a bug report or feature request.
 
 on linux you will need [`libspeechd-dev`](https://github.com/brailcom/speechd), `libclang1`, and `clang`. view the repo for speechd's build instructions, but you can also check your package manager, e.g. `sudo apt install libspeechd-dev libclang1 clang` on a debian/ubuntu based distro.
