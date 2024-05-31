@@ -378,15 +378,15 @@ async fn quote_gen_ext(tts: &mut Tts) {
 fn screenshot(tts: &mut Tts) {
     println!("hahahahah i am going to screenshot everything");
     let _ = tts.speak("hahahahah i am going to screenshot everything", true);
-#[cfg(target_os = "macos")]
-        {
-            let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
-            unsafe {
-                let date: id = msg_send![class!(NSDate), distantFuture];
-                let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
-            }
-        }
-let screens: Vec<Screen> = Screen::all().unwrap();
+    #[cfg(target_os = "macos")]
+    {
+        let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
+        unsafe {
+            let date: id = msg_send![class!(NSDate), distantFuture];
+            let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
+        }
+    }
+    let screens: Vec<Screen> = Screen::all().unwrap();
 
     for screen in screens {
         let time: String = convert_to_human_readable(Local::now().to_string().as_str());
