@@ -1,3 +1,12 @@
+#[cfg(target_os = "macos")]
+use cocoa_foundation::base::id;
+#[cfg(target_os = "macos")]
+use cocoa_foundation::foundation::NSDefaultRunLoopMode;
+#[cfg(target_os = "macos")]
+use cocoa_foundation::foundation::NSRunLoop;
+#[cfg(target_os = "macos")]
+use objc::{class, msg_send, sel, sel_impl};
+
 #[allow(clippy::wildcard_imports)]
 use crate::{
     get_config, lists::*, Speed, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL,
@@ -306,6 +315,14 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
     let quote: &str = list[index2.sample(rng)].0;
     println!("{quote}");
     let _ = tts.speak(quote, true);
+    #[cfg(target_os = "macos")]
+    {
+        let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
+        unsafe {
+            let date: id = msg_send![class!(NSDate), distantFuture];
+            let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
+        }
+    }
 }
 
 fn quote_gen(tts: &mut Tts) {
@@ -315,6 +332,14 @@ fn quote_gen(tts: &mut Tts) {
     let quote: &str = &gen_sentence(SentenceConfigBuilder::random().build());
     println!("{quote}");
     let _ = tts.speak(quote, true);
+    #[cfg(target_os = "macos")]
+    {
+        let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
+        unsafe {
+            let date: id = msg_send![class!(NSDate), distantFuture];
+            let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
+        }
+    }
 }
 
 async fn quote_gen_ext(tts: &mut Tts) {
@@ -339,13 +364,29 @@ async fn quote_gen_ext(tts: &mut Tts) {
             .unwrap();
         println!("{quote}");
         let _ = tts.speak(quote, true);
+        #[cfg(target_os = "macos")]
+        {
+            let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
+            unsafe {
+                let date: id = msg_send![class!(NSDate), distantFuture];
+                let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
+            }
+        }
     }
 }
 
 fn screenshot(tts: &mut Tts) {
     println!("hahahahah i am going to screenshot everything");
     let _ = tts.speak("hahahahah i am going to screenshot everything", true);
-    let screens: Vec<Screen> = Screen::all().unwrap();
+#[cfg(target_os = "macos")]
+        {
+            let run_loop: id = unsafe { NSRunLoop::currentRunLoop() };
+            unsafe {
+                let date: id = msg_send![class!(NSDate), distantFuture];
+                let _: () = msg_send![run_loop, runMode:NSDefaultRunLoopMode beforeDate:date];
+            }
+        }
+let screens: Vec<Screen> = Screen::all().unwrap();
 
     for screen in screens {
         let time: String = convert_to_human_readable(Local::now().to_string().as_str());
