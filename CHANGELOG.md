@@ -1,7 +1,5 @@
-## [1.0.0-pre1] - 2024-05-29
+## [1.0.0] - 2024-05-30
 
-- [x] move away from `rsautogui` so we can use the mouse better
-- [x] generally use windows dependent crates less
-- [x] so many more things
+- [x] officially support osx and linux
 
-10:56:42 PM, 5/29/2024 (UTC-5)
+11:07:34 PM, 5/30/2024 (UTC-5)

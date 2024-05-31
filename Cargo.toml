@@ -16,7 +16,7 @@ LegalCopyright = "Copyright © callmeclover 2024"
 OriginalFilename = "stupid robot nuisance"
 
 [dependencies]
-enigo = "0.2.1"
+enigo = {version = "0.2.1", features = ["x11rb"]}
 screenshots = "0.8.6"
 tts = { version = "0.26.0", features = ["speech_dispatcher_0_11"], default-features = false }
 rand = "0.8.4"
