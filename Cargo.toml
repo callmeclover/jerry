@@ -18,7 +18,7 @@ OriginalFilename = "stupid robot nuisance"
 [dependencies]
 enigo = "0.2.1"
 screenshots = "0.8.6"
-tts = { version = "0.26.0", features = ["speech_dispatcher_0_9"], default-features = false }
+tts = { version = "0.26.0", features = ["speech_dispatcher_0_11"], default-features = false }
 rand = "0.8.4"
 tokio = { version = "1.35.1", features = ["full"] }
 serde = { version = "1.0.195", features = ["derive"] }
