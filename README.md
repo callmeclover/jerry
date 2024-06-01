@@ -17,7 +17,9 @@ currently, there are 3 versions (not including crosses of any):
 
 **the `invisibility` feature has no console window, so it cannot be regularly exited out of. see [this notice](#other-little-notice) for info on killing a hidden instance.**
 
-i will also not be publishing any invisible builds for jerry beyond [v0.3.4](https://github.com/callmeclover/jerry/releases/tag/v0.3.4). build it yourself with `cargo build --features invisible`.
+i will also not be publishing any invisible or advanced builds for jerry beyond [v0.3.4](https://github.com/callmeclover/jerry/releases/tag/v0.3.4) and [v1.0.0](https://github.com/callmeclover/jerry/releases/tag/v1.0.0) respectively. build them yourself with `cargo build --features invisible` or `cargo build --features advanced`.
+
+(advanced builds may be released later, if it can work cross-platform)
 
 ## little notice
 
