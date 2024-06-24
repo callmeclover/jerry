@@ -38,6 +38,7 @@ lazy_static! {
     static ref IS_RCTRL_PRESSED: Mutex<bool> = Mutex::new(false);
 }
 
+/// Toggle the value of a modifier key.
 fn toggle_key_press(key: Key, enigo: &mut Enigo) {
     let kvalue = !*(match key {
         Key::Shift => IS_SHIFT_PRESSED.lock().unwrap(),
@@ -56,6 +57,7 @@ fn toggle_key_press(key: Key, enigo: &mut Enigo) {
     }
 }
 
+/// Drag the mouse to `pos`.
 pub fn drag_mouse_abs(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     let (mouse_x, mouse_y) = enigo.location().expect("Unable to locate mouse position.");
 
@@ -81,6 +83,7 @@ pub fn drag_mouse_abs(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     }
 }
 
+/// Drag the mouse relatively to `pos`.
 pub fn drag_mouse_rel(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     let delta_sum = (pos.0.pow(2) + pos.1.pow(2)) as f32;
     let distance = delta_sum.sqrt();
@@ -102,6 +105,7 @@ pub fn drag_mouse_rel(enigo: &mut Enigo, pos: (i32, i32), speed: Speed) {
     }
 }
 
+/// Convert a string to a mouse button.
 fn convert_mouse_action(input: &str) -> Option<Button> {
     match input {
         "left" => Some(Button::Left),
@@ -111,6 +115,7 @@ fn convert_mouse_action(input: &str) -> Option<Button> {
     }
 }
 
+/// Convert an ISO timestamp to a human-readable one.
 fn convert_to_human_readable(timestamp: &str) -> String {
     // Parse the timestamp
     let parsed_time = DateTime::parse_from_str(timestamp, "%Y-%m-%d %H:%M:%S%.f %:z")
@@ -122,6 +127,7 @@ fn convert_to_human_readable(timestamp: &str) -> String {
     formatted_time
 }
 
+/// Send keyboard inputs.
 fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(&'static [(Key, usize)], usize)> = vec![
         (ALPHANUMERIC_KEYS, 5),
@@ -141,6 +147,7 @@ fn keyboard(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     }
 }
 
+/// Send mouse inputs.
 fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (MOUSE_MOVE.to_vec(), 5),
@@ -299,6 +306,7 @@ fn mouse(enigo: &mut Enigo, rng: &mut rand::rngs::ThreadRng) {
     }
 }
 
+/// Get a random quote from a random pool.
 fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (QUOTES_NEGATIVE.to_vec(), 5),
@@ -325,6 +333,7 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
     }
 }
 
+/// Generate a quote, locally.
 fn quote_gen(tts: &mut Tts) {
     if get_config().extra.do_debugging {
         tracing::info!("quote_gen: generating sentence")
@@ -342,6 +351,7 @@ fn quote_gen(tts: &mut Tts) {
     }
 }
 
+/// Generate a quote, using an external service.
 async fn quote_gen_ext(tts: &mut Tts) {
     if ping::ping(
         std::net::IpAddr::from_str("8.8.8.8").unwrap(),
@@ -375,6 +385,7 @@ async fn quote_gen_ext(tts: &mut Tts) {
     }
 }
 
+/// Takes a screenshot of all screens and saves them to the `./screenshots` directory.
 fn screenshot(tts: &mut Tts) {
     println!("hahahahah i am going to screenshot everything");
     let _ = tts.speak("hahahahah i am going to screenshot everything", true);
@@ -397,6 +408,7 @@ fn screenshot(tts: &mut Tts) {
     }
 }
 
+/// Function to execute actions.
 pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut Enigo) {
     let mut rng: rand::prelude::ThreadRng = thread_rng();
 
@@ -415,8 +427,8 @@ pub async fn main_logic(options: &[(&str, usize)], tts: &mut Tts, enigo: &mut En
     sleep(Duration::from_millis(1500)).await;
 }
 
-#[cfg(feature = "advanced")]
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
+/// Inject gamepad inputs.
 fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (GAMEPAD_BUTTONS.to_vec(), 5),
@@ -488,8 +500,8 @@ fn gamepad(gamepad: &mut GamepadInjector, rng: &mut rand::rngs::ThreadRng) {
     gamepad.inject();
 }
 
-#[cfg(feature = "advanced")]
-#[cfg(target_os = "windows")]
+#[cfg(all(feature = "advanced", target_os = "windows"))]
+/// Inject pen inputs.
 fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
     let lists: Vec<(Vec<(&str, usize)>, usize)> = vec![
         (PEN_BUTTONS.to_vec(), 3),
@@ -569,6 +581,7 @@ fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
 }
 
 #[cfg(feature = "advanced")]
+/// Advanced main_logic function. Used only for things like gamepad and pen support. 
 pub async fn main_logic_adv(
     options: &[(&str, usize)],
     tts: &mut Tts,

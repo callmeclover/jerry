@@ -1,5 +1,5 @@
-## [1.0.0] - 2024-05-30
+## [1.0.1] - 2024-06-24
 
-- [x] officially support osx and linux
+- [x] add doc comments
 
-11:07:34 PM, 5/30/2024 (UTC-5)
+9:52:22 AM, 6/24/2024 (UTC-5)

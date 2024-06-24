@@ -2,7 +2,9 @@
     all(feature = "invisibility", target_os = "windows"),
     windows_subsystem = "windows"
 )]
+
 // Begin allow clippy warnings
+
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_precision_loss)]
 #![allow(clippy::cast_sign_loss)]
@@ -13,6 +15,7 @@ mod config;
 mod func;
 mod lists;
 mod model;
+
 use config::{get_config, get_options, Config};
 use enigo::{Enigo, Settings};
 #[allow(clippy::wildcard_imports)]
@@ -23,6 +26,7 @@ use std::fs::{create_dir, metadata};
 use tts::Tts;
 
 #[tokio::main]
+/// Where this asshole starts.
 async fn main() {
     #[cfg(all(target_os = "unix", feature = "invisibility"))]
     {

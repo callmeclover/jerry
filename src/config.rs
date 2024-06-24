@@ -1,20 +1,22 @@
 use cached::proc_macro::cached;
-#[allow(unused_imports)]
-use dialoguer::{theme::ColorfulTheme, Confirm};
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
+#[cfg(not(feature = "invisibility"))]
+use dialoguer::{theme::ColorfulTheme, Confirm};
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone, Eq, Hash, PartialEq)]
+/// Jerry's config struct.
 pub struct Config {
-    #[allow(dead_code)] // Disable dead code warning for the entire struct
+    #[allow(dead_code)]
     basic: Basic,
-    #[allow(dead_code)] // Disable dead code warning for the entire struct
+    #[allow(dead_code)]
     pub extra: Extra,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 #[allow(clippy::struct_excessive_bools)]
+/// Basic options, like whether to enable keyboard inputs or not.
 struct Basic {
     #[allow(dead_code)]
     use_mouse: bool,
@@ -34,6 +36,7 @@ struct Basic {
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone, Hash, PartialEq, Eq)]
 #[allow(clippy::struct_excessive_bools)]
+/// Extra options, like whether to use an external sentence api or not.
 pub struct Extra {
     #[allow(dead_code)]
     pub do_debugging: bool,
@@ -67,6 +70,7 @@ impl Default for Basic {
 }
 
 #[cached]
+/// Attempt to read a config file, or create one.
 pub fn get_config() -> Config {
     loop {
         if Path::new("./config.toml").exists() {
@@ -129,6 +133,7 @@ pub fn get_config() -> Config {
     }
 }
 
+/// Get a vector of possible inputs from a Config object.
 pub fn get_options(config: &Config) -> Vec<(&'static str, usize)> {
     let mut options: Vec<(&'static str, usize)> = vec![];
 

@@ -1,8 +1,11 @@
-- [ ] testing
+- [x] v1.0.0 testing
   - [x] windows tests
-  - [ ] linux tests
+  - [x] linux tests
   - [x] macos tests
 - [ ] platform parity
   - [x] windows
   - [ ] linux
   - [ ] macos
+- [ ] verbosify code
+  - [x] add doc comments
+  - [ ] add comments everywhere else
