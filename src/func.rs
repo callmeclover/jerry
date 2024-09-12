@@ -7,7 +7,6 @@ use cocoa_foundation::foundation::NSRunLoop;
 #[cfg(target_os = "macos")]
 use objc::{class, msg_send, sel, sel_impl};
 
-#[allow(clippy::wildcard_imports)]
 use crate::{
     get_config, lists::*, Speed, SPEED_WEIGHTED_LISTS_FAST, SPEED_WEIGHTED_LISTS_NORMAL,
     SPEED_WEIGHTED_LISTS_SLOW,
@@ -27,6 +26,24 @@ use screenshots::Screen;
 use std::{fs::File, str::FromStr, sync::Mutex, thread};
 use tokio::time::{sleep, Duration};
 use tts::Tts;
+
+#[cfg(all(feature = "microphone", target_os = "windows"))]
+use rodio::{
+    cpal::{self, traits::HostTrait},
+    Decoder, Device, DeviceTrait, OutputStream, Sink,
+};
+#[cfg(all(feature = "microphone", target_os = "windows"))]
+use std::{io::Cursor, sync::Arc};
+
+#[cfg(all(feature = "microphone", target_os = "windows"))]
+struct AsRefArcVec(Arc<Vec<u8>>);
+
+#[cfg(all(feature = "microphone", target_os = "windows"))]
+impl AsRef<[u8]> for AsRefArcVec {
+    fn as_ref(&self) -> &[u8] {
+        &self.0
+    }
+}
 
 lazy_static! {
     static ref IS_SHIFT_PRESSED: Mutex<bool> = Mutex::new(false);
@@ -322,6 +339,25 @@ fn quote(tts: &mut Tts, rng: &mut rand::rngs::ThreadRng) {
     let index2: WeightedIndex<usize> = WeightedIndex::new(list.iter().map(|item| item.1)).unwrap();
     let quote: &str = list[index2.sample(rng)].0;
     println!("{quote}");
+    #[cfg(all(feature = "microphone", target_os = "windows"))]
+    {
+        let host: cpal::Host = cpal::default_host();
+        let device: &Device = &host
+            .output_devices()
+            .unwrap()
+            .filter(|d: &Device| d.name().unwrap() == "Line 1 (Virtual Audio Cable)")
+            .collect::<Vec<Device>>()[0];
+
+        let (_stream, stream_handle) = OutputStream::try_from_device(device).unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        let speech: Arc<Vec<u8>> = Arc::new(tts.synthesize(quote).unwrap());
+        let source: Decoder<Cursor<AsRefArcVec>> =
+            Decoder::new(Cursor::new(AsRefArcVec(speech))).unwrap();
+        sink.append(source);
+        sink.play();
+        sink.detach();
+        return;
+    }
     let _ = tts.speak(quote, true);
     #[cfg(target_os = "macos")]
     {
@@ -338,8 +374,28 @@ fn quote_gen(tts: &mut Tts) {
     if get_config().extra.do_debugging {
         tracing::info!("quote_gen: generating sentence")
     }
+
     let quote: &str = &gen_sentence(SentenceConfigBuilder::random().build());
     println!("{quote}");
+    #[cfg(all(feature = "microphone", target_os = "windows"))]
+    {
+        let host: cpal::Host = cpal::default_host();
+        let device: &Device = &host
+            .output_devices()
+            .unwrap()
+            .filter(|d: &Device| d.name().unwrap() == "Line 1 (Virtual Audio Cable)")
+            .collect::<Vec<Device>>()[0];
+
+        let (_stream, stream_handle) = OutputStream::try_from_device(device).unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        let speech: Arc<Vec<u8>> = Arc::new(tts.synthesize(quote).unwrap());
+        let source: Decoder<Cursor<AsRefArcVec>> =
+            Decoder::new(Cursor::new(AsRefArcVec(speech))).unwrap();
+        sink.append(source);
+        sink.play();
+        sink.detach();
+        return;
+    }
     let _ = tts.speak(quote, true);
     #[cfg(target_os = "macos")]
     {
@@ -373,6 +429,25 @@ async fn quote_gen_ext(tts: &mut Tts) {
             .await
             .unwrap();
         println!("{quote}");
+        #[cfg(all(feature = "microphone", target_os = "windows"))]
+        {
+            let host: cpal::Host = cpal::default_host();
+        let device: &Device = &host
+            .output_devices()
+            .unwrap()
+            .filter(|d: &Device| d.name().unwrap() == "Line 1 (Virtual Audio Cable)")
+            .collect::<Vec<Device>>()[0];
+
+        let (_stream, stream_handle) = OutputStream::try_from_device(device).unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        let speech: Arc<Vec<u8>> = Arc::new(tts.synthesize(quote).unwrap());
+        let source: Decoder<Cursor<AsRefArcVec>> =
+            Decoder::new(Cursor::new(AsRefArcVec(speech))).unwrap();
+        sink.append(source);
+        sink.play();
+        sink.detach();
+            return;
+        }
         let _ = tts.speak(quote, true);
         #[cfg(target_os = "macos")]
         {
@@ -581,7 +656,7 @@ fn pen(pen: &mut PenInjector, rng: &mut rand::rngs::ThreadRng) {
 }
 
 #[cfg(feature = "advanced")]
-/// Advanced main_logic function. Used only for things like gamepad and pen support. 
+/// Advanced main_logic function. Used only for things like gamepad and pen support.
 pub async fn main_logic_adv(
     options: &[(&str, usize)],
     tts: &mut Tts,

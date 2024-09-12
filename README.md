@@ -12,8 +12,11 @@ currently, there are 3 versions (not including crosses of any):
 - default (basic movement and window)
 - invisibility (no console window)
 - advanced (advanced movement feature)
+- microphone (pipe jerry into microphone)
 
 **the `advanced` feature requires administrator privileges. this is why it is seperate from `default`. it also depends on the `windows` crate, so it does not support linux/macos.**
+
+**the `microphone` feature requires [virtual audio cable.](https://vac.muzychenko.net/en/) it only supports windows currently.**
 
 **the `invisibility` feature has no console window, so it cannot be regularly exited out of. you'll need to kill its process.**
 

@@ -1,9 +1,9 @@
 use cached::proc_macro::cached;
+#[cfg(not(feature = "invisibility"))]
+use dialoguer::{theme::ColorfulTheme, Confirm};
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 use toml::{de::Error, from_str, to_string_pretty};
-#[cfg(not(feature = "invisibility"))]
-use dialoguer::{theme::ColorfulTheme, Confirm};
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone, Eq, Hash, PartialEq)]
 /// Jerry's config struct.

@@ -3,14 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-// Begin allow clippy warnings
-
-#![allow(clippy::cast_possible_truncation)]
-#![allow(clippy::cast_precision_loss)]
-#![allow(clippy::cast_sign_loss)]
-
-// End allow clippy warnings
-
 mod config;
 mod func;
 mod lists;
@@ -18,9 +10,7 @@ mod model;
 
 use config::{get_config, get_options, Config};
 use enigo::{Enigo, Settings};
-#[allow(clippy::wildcard_imports)]
 use func::*;
-#[allow(clippy::wildcard_imports)]
 use model::*;
 use std::fs::{create_dir, metadata};
 use tts::Tts;
